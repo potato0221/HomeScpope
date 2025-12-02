@@ -25,4 +25,4 @@ custom:
     frontUrl: "http://${custom.dev.cookieDomain}:5173"
     backUrl: "http://${custom.dev.cookieDomain}:${server.port}"
   api:
-    key: ${API_KEY}
+    key: ON_SECRET
