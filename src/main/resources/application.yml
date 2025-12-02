@@ -1,0 +1,28 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: HomeScope
+  profiles:
+    active: dev, secret
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+  elasticsearch:
+    client:
+      uris: http://localhost:9200
+    socket-timeout: 10s
+logging:
+  level:
+    root: INFO
+    org.springframework.data.elasticsearch: DEBUG
+    org.elasticsearch.client: DEBUG
+
+custom:
+  dev:
+    cookieDomain: localhost
+    frontUrl: "http://${custom.dev.cookieDomain}:5173"
+    backUrl: "http://${custom.dev.cookieDomain}:${server.port}"
+  api:
+    key: ${API_KEY}
