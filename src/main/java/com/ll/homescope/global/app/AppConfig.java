@@ -2,7 +2,6 @@ package com.ll.homescope.global.app;
 
 import lombok.Getter;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -11,6 +10,25 @@ import java.io.IOException;
 
 @Configuration
 public class AppConfig {
+
+    @Getter
+    public static String openApiKey;
+
+    @Value("${custom.api.key}")
+    public void setOpenApiKey(String openApiKey) {
+        this.openApiKey = openApiKey;
+    }
+
+    private static String activeProfile;
+
+    @Value("${spring.profiles.active}")
+    public void setActiveProfile(String activeProfile) {
+        this.activeProfile = activeProfile;
+    }
+
+    public static boolean isProd() {
+        return activeProfile.equals("prod");
+    }
 
     @Getter
     private static String siteFrontUrl;
