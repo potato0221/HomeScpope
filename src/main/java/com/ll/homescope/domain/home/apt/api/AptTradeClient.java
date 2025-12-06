@@ -1,7 +1,7 @@
-package com.ll.homescope.home.apt.api;
+package com.ll.homescope.domain.home.apt.api;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import com.ll.homescope.home.apt.dto.ApartmentTradeResponse;
+import com.ll.homescope.domain.home.apt.dto.ApartmentTradeResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;

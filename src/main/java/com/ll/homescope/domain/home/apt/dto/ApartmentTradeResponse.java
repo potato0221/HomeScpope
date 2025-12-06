@@ -1,4 +1,4 @@
-package com.ll.homescope.home.apt.dto;
+package com.ll.homescope.domain.home.apt.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;

@@ -1,7 +1,7 @@
-package com.ll.homescope.home.apt.controller;
+package com.ll.homescope.domain.home.apt.controller;
 
 
-import com.ll.homescope.home.apt.service.AptService;
+import com.ll.homescope.domain.home.apt.service.AptService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

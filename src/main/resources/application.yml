@@ -2,27 +2,56 @@ server:
   port: 8090
 
 spring:
-  application:
-    name: HomeScope
   profiles:
-    active: dev, secret
+    active: dev
+    include: secret
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
   jackson:
     serialization:
       fail-on-empty-beans: false
+
+  threads:
+    virtual:
+      enabled: true
+
+  datasource:
+    url: jdbc:h2:./db_dev;MODE=PostgreSQL
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100
+        format_sql: true
+        highlight_sql: true
+        use_sql_comments: true
+
   elasticsearch:
     client:
       uris: http://localhost:9200
     socket-timeout: 10s
+
 logging:
   level:
     root: INFO
     org.springframework.data.elasticsearch: DEBUG
     org.elasticsearch.client: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
 
 custom:
   dev:
     cookieDomain: localhost
-    frontUrl: "http://${custom.dev.cookieDomain}:5173"
-    backUrl: "http://${custom.dev.cookieDomain}:${server.port}"
+    frontUrl: "http://localhost:5173"
+    backUrl: "http://localhost:${server.port}"
   api:
     key: ON_SECRET

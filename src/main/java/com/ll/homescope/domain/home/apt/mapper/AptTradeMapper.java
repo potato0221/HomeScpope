@@ -1,7 +1,7 @@
-package com.ll.homescope.home.apt.mapper;
+package com.ll.homescope.domain.home.apt.mapper;
 
-import com.ll.homescope.home.apt.dto.ApartmentTradeResponse;
-import com.ll.homescope.home.realestate.entity.RealEstateDeal;
+import com.ll.homescope.domain.home.apt.dto.ApartmentTradeResponse;
+import com.ll.homescope.domain.home.realestate.entity.RealEstateDeal;
 import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 
 import java.time.LocalDate;

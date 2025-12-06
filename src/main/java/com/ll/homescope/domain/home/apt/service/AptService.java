@@ -1,10 +1,10 @@
-package com.ll.homescope.home.apt.service;
+package com.ll.homescope.domain.home.apt.service;
 
-import com.ll.homescope.home.apt.api.AptTradeClient;
-import com.ll.homescope.home.apt.dto.ApartmentTradeResponse;
-import com.ll.homescope.home.apt.mapper.AptTradeMapper;
-import com.ll.homescope.home.realestate.entity.RealEstateDeal;
-import com.ll.homescope.home.realestate.repository.RealEstateDealRepository;
+import com.ll.homescope.domain.home.apt.api.AptTradeClient;
+import com.ll.homescope.domain.home.apt.dto.ApartmentTradeResponse;
+import com.ll.homescope.domain.home.apt.mapper.AptTradeMapper;
+import com.ll.homescope.domain.home.realestate.entity.RealEstateDeal;
+import com.ll.homescope.domain.home.realestate.repository.RealEstateDealRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
