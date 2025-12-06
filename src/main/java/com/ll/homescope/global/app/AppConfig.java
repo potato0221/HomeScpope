@@ -101,4 +101,7 @@ public class AppConfig {
 
     @Getter
     public static String csvFilePath = "src/main/resources/csv/areaCode.csv";
+
+    @Getter
+    public static String cleanCsvFilePath = "src/main/resources/csv/areaCodeNew.csv";
 }

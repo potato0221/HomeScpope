@@ -3,14 +3,14 @@ package com.ll.homescope.domain.home.area.service;
 import com.ll.homescope.domain.home.area.entity.Area;
 import com.ll.homescope.domain.home.area.repository.AreaRepository;
 import com.ll.homescope.global.app.AppConfig;
+import com.ll.homescope.global.enums.Msg;
+import com.ll.homescope.global.exceptions.GlobalException;
 import com.opencsv.CSVReader;
-import com.opencsv.exceptions.CsvException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -24,41 +24,40 @@ public class AreaService {
     private final AreaRepository areaRepository;
 
     @Transactional
-    public void saveArea() throws IOException, CsvException {
+    public void saveArea() {
 
-        String csvFilepath = AppConfig.getCsvFilePath();
+        try {
+            String csvFilepath = AppConfig.getCsvFilePath();
 
-        CSVReader csvReader = new CSVReader(
-                new InputStreamReader(
-                new FileInputStream(csvFilepath), StandardCharsets.UTF_8));
+            CSVReader csvReader =
+                    new CSVReader(
+                            new InputStreamReader(
+                                    new FileInputStream(csvFilepath), StandardCharsets.UTF_8));
 
-        //헤더 스킵
-        csvReader.skip(1);
+            // 헤더 스킵
+            csvReader.skip(1);
 
-        List<String[]> rows = csvReader.readAll();
+            List<String[]> rows = csvReader.readAll();
+            List<Area> areasToSave = new ArrayList<>();
 
-        List<Area> areasToSave = new ArrayList<>();
+            for (String[] row : rows) {
+                int areaCode = Integer.parseInt(row[0]);
+                String areaName = row[1];
 
-        for(String[] row : rows){
-
-            if(row[2].equals("폐쇄")){
-                System.out.println("폐쇄 스킵");
-                continue;
+                if (!areaRepository.existsByAreaCode(areaCode)) {
+                    areasToSave.add(
+                            Area.builder()
+                                    .areaCode(areaCode)
+                                    .areaName(areaName)
+                                    .build()
+                    );
+                }
             }
 
-            int areaCode = Integer.parseInt(row[0].substring(0,5));
-            String areaName = row[1];
+            areaRepository.saveAll(areasToSave);
 
-            if(!areaRepository.existsByAreaCode(areaCode)){
-                Area area = Area.builder()
-                        .areaCode(areaCode)
-                        .areaName(areaName)
-                        .build();
-
-                areasToSave.add(area);
-            }
+        } catch (Exception e) {
+            throw new GlobalException(Msg.E500_0_CSV_READ_FAIL, e);
         }
-
-        areaRepository.saveAll(areasToSave);
     }
 }
