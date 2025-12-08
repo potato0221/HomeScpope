@@ -41,7 +41,7 @@ public class AreaService {
             List<Area> areasToSave = new ArrayList<>();
 
             for (String[] row : rows) {
-                int areaCode = Integer.parseInt(row[0]);
+                String areaCode = row[0];
                 String areaName = row[1];
 
                 if (!areaRepository.existsByAreaCode(areaCode)) {

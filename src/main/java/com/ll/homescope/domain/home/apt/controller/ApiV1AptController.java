@@ -2,6 +2,9 @@ package com.ll.homescope.domain.home.apt.controller;
 
 
 import com.ll.homescope.domain.home.apt.service.AptService;
+import com.ll.homescope.global.enums.Msg;
+import com.ll.homescope.global.rsData.RsData;
+import com.ll.homescope.standard.base.Empty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,12 +18,14 @@ public class ApiV1AptController {
 
     private final AptService aptService;
 
-    @GetMapping("/fetch")
-    public String fetch(
-            @RequestParam String lawdCd,
-            @RequestParam String dealYmd
+    @GetMapping("/add")
+    public RsData<Empty> fetch(
+            @RequestParam int year,
+            @RequestParam String half
     ) {
-        aptService.fetchAndSave(lawdCd, dealYmd);
-        return "OK";
+        aptService.fetchByYear(year, half);
+
+        return RsData.of(Msg.E200_0_CREATE_SUCCEED);
     }
+
 }

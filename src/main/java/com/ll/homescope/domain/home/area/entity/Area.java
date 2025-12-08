@@ -16,7 +16,7 @@ import static lombok.AccessLevel.PROTECTED;
 public class Area {
 
     @Id
-    private int areaCode;
+    private String areaCode;
 
     private String areaName;
 

@@ -10,7 +10,7 @@ import java.util.List;
 
 public class AptTradeMapper {
 
-    public static List<RealEstateDeal> toRealEstateDeals(ApartmentTradeResponse response) {
+    public static List<RealEstateDeal> toRealEstateDeals(String areaCode, ApartmentTradeResponse response) {
         List<RealEstateDeal> results = new ArrayList<>();
 
         if (response == null || response.getBody() == null || response.getBody().getItems() == null) {
@@ -18,13 +18,13 @@ public class AptTradeMapper {
         }
 
         for (ApartmentTradeResponse.Item item : response.getBody().getItems().getItem()) {
-            results.add(toRealEstateDeal(item));
+            results.add(toRealEstateDeal(areaCode, item));
         }
 
         return results;
     }
 
-    public static RealEstateDeal toRealEstateDeal(ApartmentTradeResponse.Item item) {
+    public static RealEstateDeal toRealEstateDeal(String areaCode, ApartmentTradeResponse.Item item) {
 
         // 날짜 변환 YYYY-MM-DD
         LocalDate dealDate = LocalDate.of(
@@ -33,19 +33,28 @@ public class AptTradeMapper {
                 Integer.parseInt(item.getDealDay())
         );
 
-        // 금액 "12,000" → long 120000000L
+        // 금액
         long price = parsePrice(item.getDealAmount());
 
-        // 면적 문자열 → double
+        // 면적
         double area = parseDouble(item.getExcluUseAr());
 
-        // 층 문자열 → int
+        // 층
         int floor = parseInt(item.getFloor());
 
-        // 건축년도 문자열 → int
+        // 건축 년도
         int buildYear = parseInt(item.getBuildYear());
 
+        String id = areaCode + "-" +
+                item.getAptNm() + "-" +
+                item.getDealYear() + item.getDealMonth() + item.getDealDay() + "-" +
+                item.getExcluUseAr() + "-" +
+                item.getFloor();
+
+        id = id.replace(" ", "").replace(",", "");
+
         return RealEstateDeal.builder()
+                .id(id)
                 .region(item.getUmdNm())
                 .complexName(item.getAptNm())
                 .dealDate(dealDate)
@@ -54,8 +63,8 @@ public class AptTradeMapper {
                 .floor(floor)
                 .buildYear(buildYear)
                 .transactionType(item.getDealingGbn())
-                .propertyType("APT")   // 추후 확장 대비
-                .location(new GeoPoint(0,0)) // ⚠ 좌표는 나중에 채우는 단계
+                .propertyType("APT")
+                .location(new GeoPoint(0,0))
                 .build();
     }
 
