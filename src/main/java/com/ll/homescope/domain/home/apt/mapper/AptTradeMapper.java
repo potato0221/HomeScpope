@@ -45,9 +45,13 @@ public class AptTradeMapper {
         // 건축 년도
         int buildYear = parseInt(item.getBuildYear());
 
+
+        String month = String.format("%02d", Integer.parseInt(item.getDealMonth()));
+        String day   = String.format("%02d", Integer.parseInt(item.getDealDay()));
+
         String id = areaCode + "-" +
                 item.getAptNm() + "-" +
-                item.getDealYear() + item.getDealMonth() + item.getDealDay() + "-" +
+                item.getDealYear() + month + day + "-" +
                 item.getExcluUseAr() + "-" +
                 item.getFloor();
 
