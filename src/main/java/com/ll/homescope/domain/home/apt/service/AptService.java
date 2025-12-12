@@ -6,6 +6,7 @@ import com.ll.homescope.domain.home.apt.mapper.AptTradeMapper;
 import com.ll.homescope.domain.home.area.repository.AreaRepository;
 import com.ll.homescope.domain.home.realestate.entity.RealEstateDeal;
 import com.ll.homescope.domain.home.realestate.repository.RealEstateDealRepository;
+import com.ll.homescope.global.app.AppConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,20 +26,15 @@ public class AptService {
         int numOfRows = 100;
 
         while (true) {
-            // ① 공공 API 호출
             ApartmentTradeResponse response =
                     aptTradeClient.fetch(areaCode, dealYmd, pageNo, numOfRows);
 
-            // ② 응답 XML -> RealEstateDeal 리스트 변환
             List<RealEstateDeal> deals = AptTradeMapper.toRealEstateDeals(areaCode, response);
 
-            // 종료 조건
             if (deals.isEmpty()) break;
 
-            // ③ Elasticsearch 저장
-            realEstateDealRepository.saveAll(deals);
+            saveInBatches(deals);
 
-            // 마지막 페이지면 종료
             int current = response.getBody().getPageNo() * numOfRows;
             int total = response.getBody().getTotalCount();
             if (current >= total) break;
@@ -79,6 +75,24 @@ public class AptService {
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt(); // 인터럽트 상태 복구
                 }
+            }
+        }
+    }
+
+    private void saveInBatches(List<RealEstateDeal> deals) {
+
+        int bulkSize = AppConfig.BULK_SIZE;
+
+        for (int i = 0; i < deals.size(); i += bulkSize) {
+            int end = Math.min(i + bulkSize, deals.size());
+            List<RealEstateDeal> batch = deals.subList(i, end);
+
+            realEstateDealRepository.saveAll(batch);
+
+            try {
+                Thread.sleep(150);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
         }
     }

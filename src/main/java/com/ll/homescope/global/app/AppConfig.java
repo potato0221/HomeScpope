@@ -14,6 +14,8 @@ public class AppConfig {
     @Getter
     public static String openApiKey;
 
+
+
     @Value("${custom.api.key}")
     public void setOpenApiKey(String openApiKey) {
         this.openApiKey = openApiKey;
@@ -79,6 +81,9 @@ public class AppConfig {
 
     @Getter
     public static String genFileDirPath;
+
+    @Getter
+    public static final int BULK_SIZE = 200;
 
     @Value("${custom.genFile.dirPath}")
     public void setGenFileDirPath(String genFileDirPath) {
