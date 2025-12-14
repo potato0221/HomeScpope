@@ -21,6 +21,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/stats/avg-price/region": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 지역 별 평균 값 */
+        get: operations["avgPriceByRegion"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/apt/add": {
         parameters: {
             query?: never;
@@ -28,6 +45,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** 반기 별 데이터 호출 */
         get: operations["fetch"];
         put?: never;
         post?: never;
@@ -48,6 +66,20 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["Empty"];
+            success: boolean;
+            fail: boolean;
+        };
+        AvgPriceByRegionDto: {
+            region?: string;
+            /** Format: double */
+            avgPrice?: number;
+        };
+        RsDataListAvgPriceByRegionDto: {
+            resultCode: string;
+            /** Format: int32 */
+            statusCode: number;
+            msg: string;
+            data: components["schemas"]["AvgPriceByRegionDto"][];
             success: boolean;
             fail: boolean;
         };
@@ -76,6 +108,26 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["RsDataEmpty"];
+                };
+            };
+        };
+    };
+    avgPriceByRegion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RsDataListAvgPriceByRegionDto"];
                 };
             };
         };

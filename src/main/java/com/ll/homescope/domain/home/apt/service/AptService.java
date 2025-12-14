@@ -4,6 +4,7 @@ import com.ll.homescope.domain.home.apt.api.AptTradeClient;
 import com.ll.homescope.domain.home.apt.dto.ApartmentTradeResponse;
 import com.ll.homescope.domain.home.apt.mapper.AptTradeMapper;
 import com.ll.homescope.domain.home.area.repository.AreaRepository;
+import com.ll.homescope.domain.home.area.entity.Area;
 import com.ll.homescope.domain.home.realestate.entity.RealEstateDeal;
 import com.ll.homescope.domain.home.realestate.repository.RealEstateDealRepository;
 import com.ll.homescope.global.app.AppConfig;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +23,7 @@ public class AptService {
     private final RealEstateDealRepository realEstateDealRepository;
     private final AreaRepository areaRepository;
 
-    public void fetchAndSave(String areaCode, String dealYmd) {
+    public void fetchAndSave(String areaCode, String region, String dealYmd) {
 
         int pageNo = 1;
         int numOfRows = 100;
@@ -29,7 +32,7 @@ public class AptService {
             ApartmentTradeResponse response =
                     aptTradeClient.fetch(areaCode, dealYmd, pageNo, numOfRows);
 
-            List<RealEstateDeal> deals = AptTradeMapper.toRealEstateDeals(areaCode, response);
+            List<RealEstateDeal> deals = AptTradeMapper.toRealEstateDeals(areaCode, region, response);
 
             if (deals.isEmpty()) break;
 
@@ -56,18 +59,27 @@ public class AptService {
             endMonth = 12;
         }
 
-        List<String> areaCodes = areaRepository.findAllAreaCodes();
+        Map<String, String> areaMap =
+                areaRepository.findAll()
+                        .stream()
+                        .collect(Collectors.toMap(
+                                Area::getAreaCode,
+                                Area::getAreaName
+                        ));
 
-        for (String code : areaCodes) {
+        for (Map.Entry<String, String> entry : areaMap.entrySet() ) {
 
             for (int month = firstMonth; month <= endMonth; month++) {
+
+                String code = entry.getKey();
+                String region = entry.getValue();
 
                 String dealYmd = year + String.format("%02d", month);
 
                 try {
-                    this.fetchAndSave(code, dealYmd);
+                    this.fetchAndSave(code, region, dealYmd);
                 } catch (Exception e) {
-                    System.out.println("Error region= " + code + ", ymd= " + dealYmd);
+                    System.out.println("Error region= " + code + region + ", ymd= " + dealYmd);
                 }
 
                 try {

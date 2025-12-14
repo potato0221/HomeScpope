@@ -10,7 +10,7 @@ import java.util.List;
 
 public class AptTradeMapper {
 
-    public static List<RealEstateDeal> toRealEstateDeals(String areaCode, ApartmentTradeResponse response) {
+    public static List<RealEstateDeal> toRealEstateDeals(String areaCode, String region, ApartmentTradeResponse response) {
         List<RealEstateDeal> results = new ArrayList<>();
 
         if (response == null || response.getBody() == null || response.getBody().getItems() == null) {
@@ -18,13 +18,13 @@ public class AptTradeMapper {
         }
 
         for (ApartmentTradeResponse.Item item : response.getBody().getItems().getItem()) {
-            results.add(toRealEstateDeal(areaCode, item));
+            results.add(toRealEstateDeal(areaCode, region, item));
         }
 
         return results;
     }
 
-    public static RealEstateDeal toRealEstateDeal(String areaCode, ApartmentTradeResponse.Item item) {
+    public static RealEstateDeal toRealEstateDeal(String areaCode, String region, ApartmentTradeResponse.Item item) {
 
         // 날짜 변환 YYYY-MM-DD
         LocalDate dealDate = LocalDate.of(
@@ -59,7 +59,7 @@ public class AptTradeMapper {
 
         return RealEstateDeal.builder()
                 .id(id)
-                .region(item.getUmdNm())
+                .region(region)
                 .complexName(item.getAptNm())
                 .dealDate(dealDate)
                 .price(price)

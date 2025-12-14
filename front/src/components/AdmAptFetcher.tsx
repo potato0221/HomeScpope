@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { client } from "@/lib/api/client";
+import { addArea, fetchApt } from "@/lib/api/admin";
 import { Button } from "@/components/ui/button";
 
 export default function AdminAptFetcher() {
@@ -12,7 +12,7 @@ export default function AdminAptFetcher() {
   const handleAddArea = async () => {
     setLoading(true);
 
-    const { data, error } = await client.POST("/api/v1/area/add");
+    const { data, error } = await addArea();
 
     setLoading(false);
 
@@ -27,14 +27,7 @@ export default function AdminAptFetcher() {
   const handleFetchApt = async () => {
     setLoading(true);
 
-    const { data, error } = await client.GET("/api/v1/apt/add", {
-      params: {
-        query: {
-          year: Number(year),
-          half,
-        },
-      },
-    });
+    const { data, error } = await fetchApt(Number(year), half);
 
     setLoading(false);
 
