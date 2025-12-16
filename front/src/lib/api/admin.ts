@@ -4,10 +4,10 @@ export function addArea() {
   return client.POST("/api/v1/area/add");
 }
 
-export function fetchApt(year: number, half: string) {
+export function fetchApt(collectedYear: number, collectedHalf: string) {
   return client.GET("/api/v1/apt/add", {
     params: {
-      query: { year, half },
+      query: { collectedYear, collectedHalf },
     },
   });
 }

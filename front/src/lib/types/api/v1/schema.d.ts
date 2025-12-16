@@ -38,6 +38,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/apt/collected/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 수집 된 년도, 반기 목록 */
+        get: operations["collectedPeriodList"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/apt/add": {
         parameters: {
             query?: never;
@@ -45,7 +62,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** 반기 별 데이터 호출 */
+        /** 반기 별 데이터 저장 */
         get: operations["fetch"];
         put?: never;
         post?: never;
@@ -83,6 +100,20 @@ export interface components {
             success: boolean;
             fail: boolean;
         };
+        CollectedPeriodDto: {
+            /** Format: int32 */
+            statYear?: number;
+            statHalf?: string;
+        };
+        RsDataListCollectedPeriodDto: {
+            resultCode: string;
+            /** Format: int32 */
+            statusCode: number;
+            msg: string;
+            data: components["schemas"]["CollectedPeriodDto"][];
+            success: boolean;
+            fail: boolean;
+        };
     };
     responses: never;
     parameters: never;
@@ -114,7 +145,10 @@ export interface operations {
     };
     avgPriceByRegion: {
         parameters: {
-            query?: never;
+            query: {
+                statYear: number;
+                statHalf: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -132,11 +166,31 @@ export interface operations {
             };
         };
     };
+    collectedPeriodList: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RsDataListCollectedPeriodDto"];
+                };
+            };
+        };
+    };
     fetch: {
         parameters: {
             query: {
-                year: number;
-                half: string;
+                collectedYear: number;
+                collectedHalf: string;
             };
             header?: never;
             path?: never;

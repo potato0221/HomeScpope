@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface AreaRepository extends JpaRepository<Area, Integer> {
+public interface AreaRepository extends JpaRepository<Area, String> {
 
     boolean existsByAreaCode(String areaCode);
 

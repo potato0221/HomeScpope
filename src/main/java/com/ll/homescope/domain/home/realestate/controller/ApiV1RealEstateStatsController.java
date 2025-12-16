@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -23,9 +24,12 @@ public class ApiV1RealEstateStatsController {
 
     @GetMapping("/avg-price/region")
     @Operation(summary = "지역 별 평균 값")
-    public RsData<List<AvgPriceByRegionDto>> avgPriceByRegion() throws IOException {
+    public RsData<List<AvgPriceByRegionDto>> avgPriceByRegion(
+            @RequestParam int statYear,
+            @RequestParam String statHalf
+            ) throws IOException {
 
-        List<AvgPriceByRegionDto> results = realEstateStatsService.avgPriceByRegion();
+        List<AvgPriceByRegionDto> results = realEstateStatsService.avgPriceByRegion(statYear, statHalf);
 
         return RsData.of(Msg.E200_1_INQUIRY_SUCCEED, results);
     }

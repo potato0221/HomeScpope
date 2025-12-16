@@ -1,23 +1,62 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { fetchAvgPriceByRegion } from "@/lib/api/stats";
+import { useEffect, useMemo, useState } from "react";
+import { fetchAvgPriceByRegion, fetchCollectedPeriods } from "@/lib/api/stats";
 import { Button } from "@/components/ui/button";
 
 const PAGE_SIZE = 10;
 
-export default function AdminStatsPage() {
+type CollectedPeriod = {
+  statYear: number;
+  statHalf: "H1" | "H2";
+};
+
+export default function AdmAptStatsPage() {
+  const [periods, setPeriods] = useState<CollectedPeriod[]>([]);
+  const [selectedPeriod, setSelectedPeriod] = useState<CollectedPeriod | null>(
+    null
+  );
+
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [keyword, setKeyword] = useState("");
 
+  useEffect(() => {
+    (async () => {
+      const { data, error } = await fetchCollectedPeriods();
+
+      if (error) {
+        alert(error.msg);
+        return;
+      }
+
+      setPeriods(data);
+    })();
+  }, []);
+
   const handleFetch = async () => {
+    if (!selectedPeriod) {
+      alert("기간을 선택하세요");
+      return;
+    }
+
     setLoading(true);
-    const result = await fetchAvgPriceByRegion();
-    setData(result);
-    setPage(1); // 조회 시 페이지 초기화
+
+    const { data, error } = await fetchAvgPriceByRegion(
+      selectedPeriod.statYear,
+      selectedPeriod.statHalf
+    );
+
     setLoading(false);
+
+    if (error) {
+      alert(error.msg);
+      return;
+    }
+
+    setData(data);
+    setPage(1);
   };
 
   const filteredData = useMemo(() => {
@@ -37,7 +76,35 @@ export default function AdminStatsPage() {
     <div className="p-6 space-y-4">
       <h1 className="text-xl font-bold">지역별 평균 아파트 거래가</h1>
 
-      <Button className="mr-2" onClick={handleFetch} disabled={loading}>
+      {periods.length > 0 && (
+        <select
+          className="border p-2 w-64 mr-2"
+          value={
+            selectedPeriod
+              ? `${selectedPeriod.statYear}-${selectedPeriod.statHalf}`
+              : ""
+          }
+          onChange={(e) => {
+            const [year, half] = e.target.value.split("-");
+            setSelectedPeriod({
+              statYear: Number(year),
+              statHalf: half as "H1" | "H2",
+            });
+          }}
+        >
+          <option value="">수집된 기간 선택</option>
+          {periods.map((p) => (
+            <option
+              key={`${p.statYear}-${p.statHalf}`}
+              value={`${p.statYear}-${p.statHalf}`}
+            >
+              {p.statYear}년 {p.statHalf === "H1" ? "상반기" : "하반기"}
+            </option>
+          ))}
+        </select>
+      )}
+
+      <Button onClick={handleFetch} disabled={loading}>
         {loading ? "조회 중..." : "통계 조회"}
       </Button>
 
@@ -45,7 +112,7 @@ export default function AdminStatsPage() {
         <input
           type="text"
           placeholder="지역명 검색 (예 : 서울)"
-          className="border p-2 w-64"
+          className="border p-2 w-64 ml-2"
           value={keyword}
           onChange={(e) => {
             setKeyword(e.target.value);
