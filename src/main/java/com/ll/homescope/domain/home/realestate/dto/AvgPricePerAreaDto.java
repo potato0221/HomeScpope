@@ -5,9 +5,9 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class AvgPriceByRegionDto {
+public class AvgPricePerAreaDto {
 
     private String region;
-    private double avgPrice;
+    private double avgPricePerArea;
 
 }

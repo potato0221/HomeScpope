@@ -1,8 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { fetchAvgPriceByRegion, fetchCollectedPeriods } from "@/lib/api/stats";
+import {
+  fetchAvgPrice,
+  fetchAvgPricePerArea,
+  fetchCollectedPeriods,
+} from "@/lib/api/stats";
 import { Button } from "@/components/ui/button";
+import type { StatType } from "@/lib/types/stats";
+import { formatKoreanPrice } from "@/lib/utils/priceFormatter";
 
 const PAGE_SIZE = 10;
 
@@ -13,6 +19,7 @@ type CollectedPeriod = {
 
 export default function AdmAptStatsPage() {
   const [periods, setPeriods] = useState<CollectedPeriod[]>([]);
+  const [statType, setStatType] = useState<StatType>("AVG_PRICE");
   const [selectedPeriod, setSelectedPeriod] = useState<CollectedPeriod | null>(
     null
   );
@@ -43,27 +50,43 @@ export default function AdmAptStatsPage() {
 
     setLoading(true);
 
-    const { data, error } = await fetchAvgPriceByRegion(
-      selectedPeriod.statYear,
-      selectedPeriod.statHalf
-    );
+    let result;
+
+    if (statType === "AVG_PRICE") {
+      result = await fetchAvgPrice(
+        selectedPeriod.statYear,
+        selectedPeriod.statHalf
+      );
+    } else {
+      result = await fetchAvgPricePerArea(
+        selectedPeriod.statYear,
+        selectedPeriod.statHalf
+      );
+    }
 
     setLoading(false);
 
-    if (error) {
-      alert(error.msg);
+    if (result.error) {
+      alert(result.error.msg);
       return;
     }
 
-    setData(data);
+    console.log("API DATA:", result.data); // ⭐ 여기 꼭 찍어라
+
+    setData(result.data);
     setPage(1);
   };
 
   const filteredData = useMemo(() => {
     return data
       .filter((row) => row.region.toLowerCase().includes(keyword.toLowerCase()))
-      .sort((a, b) => b.avgPrice - a.avgPrice);
-  }, [data, keyword]);
+      .sort((a, b) => {
+        if (statType === "AVG_PRICE") {
+          return b.avgPrice - a.avgPrice;
+        }
+        return b.avgPricePerArea - a.avgPricePerArea;
+      });
+  }, [data, keyword, statType]);
 
   const pagedData = useMemo(() => {
     const start = (page - 1) * PAGE_SIZE;
@@ -104,6 +127,15 @@ export default function AdmAptStatsPage() {
         </select>
       )}
 
+      <select
+        className="border p-2 w-64 mr-2"
+        value={statType}
+        onChange={(e) => setStatType(e.target.value as StatType)}
+      >
+        <option value="AVG_PRICE">지역별 평균 거래가</option>
+        <option value="AVG_PRICE_PER_AREA">지역별 평당가</option>
+      </select>
+
       <Button onClick={handleFetch} disabled={loading}>
         {loading ? "조회 중..." : "통계 조회"}
       </Button>
@@ -135,7 +167,9 @@ export default function AdmAptStatsPage() {
                 <tr key={row.region}>
                   <td className="border p-2">{row.region}</td>
                   <td className="border p-2">
-                    {(row.avgPrice / 100_000_000).toFixed(1)}억
+                    {statType === "AVG_PRICE"
+                      ? formatKoreanPrice(row.avgPrice)
+                      : formatKoreanPrice(row.avgPricePerArea)}
                   </td>
                 </tr>
               ))}

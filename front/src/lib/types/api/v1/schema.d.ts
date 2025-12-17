@@ -21,7 +21,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/stats/avg-price/region": {
+    "/api/v1/stats/avg-price": {
         parameters: {
             query?: never;
             header?: never;
@@ -29,6 +29,23 @@ export interface paths {
             cookie?: never;
         };
         /** 지역 별 평균 값 */
+        get: operations["avgPrice"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/stats/avg-price/per-area": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 지역 별 평당 가격 */
         get: operations["avgPriceByRegion"];
         put?: never;
         post?: never;
@@ -86,17 +103,31 @@ export interface components {
             success: boolean;
             fail: boolean;
         };
-        AvgPriceByRegionDto: {
+        AvgPriceDto: {
             region?: string;
             /** Format: double */
             avgPrice?: number;
         };
-        RsDataListAvgPriceByRegionDto: {
+        RsDataListAvgPriceDto: {
             resultCode: string;
             /** Format: int32 */
             statusCode: number;
             msg: string;
-            data: components["schemas"]["AvgPriceByRegionDto"][];
+            data: components["schemas"]["AvgPriceDto"][];
+            success: boolean;
+            fail: boolean;
+        };
+        AvgPricePerAreaDto: {
+            region?: string;
+            /** Format: double */
+            avgPricePerArea?: number;
+        };
+        RsDataListAvgPricePerAreaDto: {
+            resultCode: string;
+            /** Format: int32 */
+            statusCode: number;
+            msg: string;
+            data: components["schemas"]["AvgPricePerAreaDto"][];
             success: boolean;
             fail: boolean;
         };
@@ -143,6 +174,29 @@ export interface operations {
             };
         };
     };
+    avgPrice: {
+        parameters: {
+            query: {
+                statYear: number;
+                statHalf: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RsDataListAvgPriceDto"];
+                };
+            };
+        };
+    };
     avgPriceByRegion: {
         parameters: {
             query: {
@@ -161,7 +215,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["RsDataListAvgPriceByRegionDto"];
+                    "*/*": components["schemas"]["RsDataListAvgPricePerAreaDto"];
                 };
             };
         };

@@ -1,7 +1,8 @@
 package com.ll.homescope.domain.home.realestate.controller;
 
 
-import com.ll.homescope.domain.home.realestate.dto.AvgPriceByRegionDto;
+import com.ll.homescope.domain.home.realestate.dto.AvgPriceDto;
+import com.ll.homescope.domain.home.realestate.dto.AvgPricePerAreaDto;
 import com.ll.homescope.domain.home.realestate.service.RealEstateStatsService;
 import com.ll.homescope.global.enums.Msg;
 import com.ll.homescope.global.rsData.RsData;
@@ -22,14 +23,26 @@ public class ApiV1RealEstateStatsController {
 
     private final RealEstateStatsService realEstateStatsService;
 
-    @GetMapping("/avg-price/region")
+    @GetMapping("/avg-price")
     @Operation(summary = "지역 별 평균 값")
-    public RsData<List<AvgPriceByRegionDto>> avgPriceByRegion(
+    public RsData<List<AvgPriceDto>> avgPrice(
             @RequestParam int statYear,
             @RequestParam String statHalf
             ) throws IOException {
 
-        List<AvgPriceByRegionDto> results = realEstateStatsService.avgPriceByRegion(statYear, statHalf);
+        List<AvgPriceDto> results = realEstateStatsService.avgPrice(statYear, statHalf);
+
+        return RsData.of(Msg.E200_1_INQUIRY_SUCCEED, results);
+    }
+
+    @GetMapping("/avg-price/per-area")
+    @Operation(summary = "지역 별 평당 가격")
+    public RsData<List<AvgPricePerAreaDto>> avgPriceByRegion(
+            @RequestParam int statYear,
+            @RequestParam String statHalf
+    ) throws IOException {
+
+        List<AvgPricePerAreaDto> results = realEstateStatsService.avgPricePerArea(statYear, statHalf);
 
         return RsData.of(Msg.E200_1_INQUIRY_SUCCEED, results);
     }

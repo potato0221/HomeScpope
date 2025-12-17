@@ -12,11 +12,28 @@ export async function fetchCollectedPeriods() {
   return { data: data.data, error: null };
 }
 
-export async function fetchAvgPriceByRegion(
+export async function fetchAvgPrice(statYear: number, statHalf: "H1" | "H2") {
+  const { data, error } = await client.GET("/api/v1/stats/avg-price", {
+    params: {
+      query: {
+        statYear,
+        statHalf,
+      },
+    },
+  });
+
+  if (error) {
+    return { data: null, error };
+  }
+
+  return { data: data.data, error: null };
+}
+
+export async function fetchAvgPricePerArea(
   statYear: number,
   statHalf: "H1" | "H2"
 ) {
-  const { data, error } = await client.GET("/api/v1/stats/avg-price/region", {
+  const { data, error } = await client.GET("/api/v1/stats/avg-price/per-area", {
     params: {
       query: {
         statYear,

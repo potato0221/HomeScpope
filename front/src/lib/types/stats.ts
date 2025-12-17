@@ -8,3 +8,5 @@ export interface RsData<T> {
   msg: string;
   data: T;
 }
+
+export type StatType = "AVG_PRICE" | "AVG_PRICE_PER_AREA";
