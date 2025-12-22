@@ -68,3 +68,7 @@ custom:
     dirPath: c:/temp/homescope_dev
   api:
     key: ON_SECRET
+    vworld:
+      key: ON_SECRET
+
+

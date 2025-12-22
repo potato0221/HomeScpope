@@ -1,4 +1,4 @@
-package com.ll.homescope.domain.home.apt.api;
+package com.ll.homescope.domain.home.apt.client;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.ll.homescope.domain.home.apt.dto.ApartmentTradeResponse;

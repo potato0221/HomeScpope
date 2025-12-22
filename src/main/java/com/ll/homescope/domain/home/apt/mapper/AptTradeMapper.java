@@ -2,7 +2,6 @@ package com.ll.homescope.domain.home.apt.mapper;
 
 import com.ll.homescope.domain.home.apt.dto.ApartmentTradeResponse;
 import com.ll.homescope.domain.home.realestate.entity.RealEstateDeal;
-import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -10,10 +9,18 @@ import java.util.List;
 
 public class AptTradeMapper {
 
-    public static List<RealEstateDeal> toRealEstateDeals(String areaCode, String region, ApartmentTradeResponse response) {
+    public static List<RealEstateDeal> toRealEstateDeals(
+            String areaCode,
+            String region,
+            ApartmentTradeResponse response
+    ) {
         List<RealEstateDeal> results = new ArrayList<>();
 
-        if (response == null || response.getBody() == null || response.getBody().getItems() == null) {
+        if (response == null ||
+                response.getBody() == null ||
+                response.getBody().getItems() == null ||
+                response.getBody().getItems().getItem() == null
+        ) {
             return results;
         }
 
@@ -45,22 +52,44 @@ public class AptTradeMapper {
         // 건축 년도
         int buildYear = parseInt(item.getBuildYear());
 
+        double areaPyeong = Math.round(
+                (Double.parseDouble(item.getExcluUseAr()) / 3.305785) * 100
+        ) / 100.0;
+
 
         String month = String.format("%02d", Integer.parseInt(item.getDealMonth()));
         String day   = String.format("%02d", Integer.parseInt(item.getDealDay()));
 
         String id = areaCode + "-" +
                 item.getAptNm() + "-" +
-                item.getDealYear() + month + day + "-" +
-                item.getExcluUseAr() + "-" +
-                item.getFloor();
+                item.getFloor() + "층" +
+                areaPyeong + "평" +
+                item.getDealYear() + month + day;
+
 
         id = id.replace(" ", "").replace(",", "");
+
+        List<String> parts = new ArrayList<>();
+
+        if (region != null && !region.isBlank()) {
+            parts.add(region);
+        }
+        if (item.getUmdNm() != null && !item.getUmdNm().isBlank()) {
+            parts.add(item.getUmdNm());
+        }
+        if (item.getJibun() != null && !item.getJibun().isBlank()) {
+            parts.add(item.getJibun());
+        }
+        if (item.getAptNm() != null && !item.getAptNm().isBlank()) {
+            parts.add(item.getAptNm());
+        }
+
+        String complexName = String.join(" ", parts);
 
         return RealEstateDeal.builder()
                 .id(id)
                 .region(region)
-                .complexName(item.getAptNm())
+                .complexName(complexName)
                 .dealDate(dealDate)
                 .price(price)
                 .area(area)
@@ -68,7 +97,6 @@ public class AptTradeMapper {
                 .buildYear(buildYear)
                 .transactionType(item.getDealingGbn())
                 .propertyType("APT")
-                .location(new GeoPoint(0,0))
                 .build();
     }
 

@@ -14,7 +14,8 @@ public class AppConfig {
     @Getter
     public static String openApiKey;
 
-
+    @Getter
+    public static String kakaoApiKey;
 
     @Value("${custom.api.key}")
     public void setOpenApiKey(String openApiKey) {

@@ -38,6 +38,8 @@ public class ApartmentTradeResponse {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Item {
         private String estateAgentSggNm;
+        private String umdNm;
+        private String jibun;
         private String aptNm;
         private String excluUseAr;
         private String dealYear;
