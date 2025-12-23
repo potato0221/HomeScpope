@@ -1,7 +1,6 @@
 package com.ll.homescope.domain.home.apt.service;
 
 import com.ll.homescope.domain.home.apt.client.AptTradeClient;
-import com.ll.homescope.domain.home.apt.client.VWorldMapClient;
 import com.ll.homescope.domain.home.apt.dto.ApartmentTradeResponse;
 import com.ll.homescope.domain.home.apt.dto.CollectedPeriodDto;
 import com.ll.homescope.domain.home.apt.entity.CollectedPeriod;
@@ -30,7 +29,6 @@ public class AptService {
     private final RealEstateDealRepository realEstateDealRepository;
     private final AreaRepository areaRepository;
     private final CollectedPeriodRepository collectedPeriodRepository;
-    private final VWorldMapClient vWorldMapClient;
 
     // 분기 별 데이터 불러오기
     public void fetchByYear(int collectedYear, String collectedHalf) {
@@ -95,30 +93,6 @@ public class AptService {
                     aptTradeClient.fetch(areaCode, dealYmd, pageNo, numOfRows);
 
             List<RealEstateDeal> deals = AptTradeMapper.toRealEstateDeals(areaCode, region, response);
-
-            for (RealEstateDeal deal : deals) {
-
-                if (deal.getLocation() != null) {
-                    continue;
-                }
-
-                vWorldMapClient.getLatLon(deal.getComplexName())
-                        .ifPresentOrElse(
-                                coord -> {
-                                    deal.updateLocation(coord[0], coord[1]);
-                                    System.out.println("좌표 성공: " + deal.getComplexName() + coord[0] + "," + coord[1]);
-                                },
-                                () -> {
-                                    System.out.println("좌표 실패: " + deal.getComplexName());
-                                }
-                        );
-
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
 
             if (deals.isEmpty()) break;
 
