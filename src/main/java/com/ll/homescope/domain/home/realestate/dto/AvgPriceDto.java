@@ -8,6 +8,7 @@ import lombok.Getter;
 public class AvgPriceDto {
 
     private String region;
+
     private double avgPrice;
 
 }

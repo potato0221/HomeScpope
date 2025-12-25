@@ -5,10 +5,14 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class AvgPricePerAreaDto {
+public class RegionBuildAgeAvgPriceDto {
 
     private String region;
 
-    private double avgPricePerArea;
+    private double newAvgPrice;
+
+    private double semiNewAvgPrice;
+
+    private double oldAvgPrice;
 
 }
