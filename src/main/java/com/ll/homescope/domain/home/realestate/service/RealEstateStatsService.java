@@ -4,8 +4,11 @@ import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
+import com.ll.homescope.domain.home.apt.repository.CollectedPeriodRepository;
 import com.ll.homescope.domain.home.realestate.dto.*;
 import com.ll.homescope.global.enums.HalfType;
+import com.ll.homescope.global.enums.Msg;
+import com.ll.homescope.global.exceptions.GlobalException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +26,7 @@ import java.util.function.Consumer;
 public class RealEstateStatsService {
 
     private final ElasticsearchClient esClient;
+    private final CollectedPeriodRepository collectedPeriodRepository;
 
     // 지역별 평균가 컨트롤러 호출 메서드
     public List<AvgPriceDto> avgPrice(
@@ -145,6 +149,10 @@ public class RealEstateStatsService {
             String currHalf
     ) throws IOException {
 
+        if(!collectedPeriodRepository.existsByStatYearAndStatHalf(prevYear, HalfType.valueOf(prevHalf))){
+            throw new GlobalException(Msg.E404_1_DATA_NOT_FOUND);
+        }
+
         DateRange prev = resolveStatDateRange(prevYear, HalfType.valueOf(prevHalf));
         DateRange curr = resolveStatDateRange(currYear, HalfType.valueOf(currHalf));
 
@@ -155,7 +163,7 @@ public class RealEstateStatsService {
                                 .aggregations("by_region", a -> a
                                         .terms(t -> t
                                                 .field("region.keyword")
-                                                .size(50)
+                                                .size(100)
                                         )
                                         .aggregations("periods", sub -> sub
                                                 .filters(f -> f
@@ -256,7 +264,7 @@ public class RealEstateStatsService {
                                 .aggregations("by_region", a -> a
                                         .terms(t -> t
                                                 .field("region.keyword")
-                                                .size(50)
+                                                .size(100)
                                         )
                                         .aggregations("by_age", sub -> sub
                                                 .filters(f -> f

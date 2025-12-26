@@ -3,7 +3,19 @@
 import { ResponsiveBar } from "@nivo/bar";
 import { formatKoreanPrice } from "@/lib/utils/priceFormatter";
 
-export function UserPriceBarChart({ data }: { data: any[] }) {
+type BarChartData = {
+  region: string;
+  value: number;
+};
+
+type Props = {
+  data: BarChartData[];
+  valueFormatter?: (v: number) => string;
+};
+
+export function UserPriceBarChart({ data, valueFormatter }: Props) {
+  const format = valueFormatter ?? ((v: number) => formatKoreanPrice(v));
+
   return (
     <div style={{ height: 420 }}>
       <ResponsiveBar
@@ -18,7 +30,6 @@ export function UserPriceBarChart({ data }: { data: any[] }) {
           const b = 140;
 
           const alpha = Math.max(0.35, 1 - index * 0.07);
-
           return `rgba(${r}, ${g}, ${b}, ${alpha})`;
         }}
         valueScale={{ type: "linear" }}
@@ -29,7 +40,7 @@ export function UserPriceBarChart({ data }: { data: any[] }) {
           legendOffset: 60,
         }}
         axisLeft={{
-          format: (v) => formatKoreanPrice(Number(v)),
+          format: (v) => format(Number(v)),
         }}
         enableLabel={false}
         layers={[
@@ -46,9 +57,9 @@ export function UserPriceBarChart({ data }: { data: any[] }) {
                 y={bar.y - 6}
                 textAnchor="middle"
                 fontSize={12}
-                fill="#1E3A8A" // blue-900
+                fill="#1E3A8A"
               >
-                {formatKoreanPrice(bar.data.value as number)}
+                {format(bar.data.value as number)}
               </text>
             )),
         ]}
@@ -62,7 +73,7 @@ export function UserPriceBarChart({ data }: { data: any[] }) {
             }}
           >
             <strong>{indexValue}</strong>
-            <div>{formatKoreanPrice(Number(value))}</div>
+            <div>{format(Number(value))}</div>
           </div>
         )}
         borderRadius={8}

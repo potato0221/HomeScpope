@@ -22,6 +22,7 @@ public enum Msg {
     E401_0_UNAUTHORIZED("401-0", "로그인 후 이용 해 주세요"),
     E403_0_FORBIDDEN("403-0", "관리자 권한이 필요합니다"),
     E404_0_DATA_NOT_FOUND("404-0", "데이터를 찾을 수 없습니다."),
+    E404_1_DATA_NOT_FOUND("404-1", "전기 데이터를 찾을 수 없습니다."),
 
     E500_0_CSV_READ_FAIL("500-0", "CSV 읽기에 실패했습니다."),
     E500_1_INTERNAL_SERVER_ERROR("500-1", "서버 내부 오류가 발생했습니다.");

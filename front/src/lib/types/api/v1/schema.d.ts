@@ -21,6 +21,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/stats/trading-volume": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 지역 별 거래량 */
+        get: operations["getTradingVolumeByRegion"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/stats/avg-price": {
         parameters: {
             query?: never;
@@ -29,7 +46,7 @@ export interface paths {
             cookie?: never;
         };
         /** 지역 별 평균 값 */
-        get: operations["avgPrice"];
+        get: operations["getAvgPrice"];
         put?: never;
         post?: never;
         delete?: never;
@@ -46,7 +63,41 @@ export interface paths {
             cookie?: never;
         };
         /** 지역 별 평당 가격 */
-        get: operations["avgPriceByRegion"];
+        get: operations["getAvgPriceByRegion"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/stats/avg-price/change": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 지역 별 평균가 증감률 */
+        get: operations["getAvgPriceChangedByRegion"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/stats/avg-price/build-age": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** 지역 별 신축/준신축/구축 평균가 */
+        get: operations["getAvgPriceByBuildAge"];
         put?: never;
         post?: never;
         delete?: never;
@@ -103,6 +154,20 @@ export interface components {
             success: boolean;
             fail: boolean;
         };
+        RegionCountDto: {
+            region?: string;
+            /** Format: int64 */
+            count?: number;
+        };
+        RsDataListRegionCountDto: {
+            resultCode: string;
+            /** Format: int32 */
+            statusCode: number;
+            msg: string;
+            data: components["schemas"]["RegionCountDto"][];
+            success: boolean;
+            fail: boolean;
+        };
         AvgPriceDto: {
             region?: string;
             /** Format: double */
@@ -128,6 +193,42 @@ export interface components {
             statusCode: number;
             msg: string;
             data: components["schemas"]["AvgPricePerAreaDto"][];
+            success: boolean;
+            fail: boolean;
+        };
+        RegionPriceChangeDto: {
+            region?: string;
+            /** Format: double */
+            prevAvgPrice?: number;
+            /** Format: double */
+            currAvgPrice?: number;
+            /** Format: double */
+            changeRate?: number;
+        };
+        RsDataListRegionPriceChangeDto: {
+            resultCode: string;
+            /** Format: int32 */
+            statusCode: number;
+            msg: string;
+            data: components["schemas"]["RegionPriceChangeDto"][];
+            success: boolean;
+            fail: boolean;
+        };
+        RegionBuildAgeAvgPriceDto: {
+            region?: string;
+            /** Format: double */
+            newAvgPrice?: number;
+            /** Format: double */
+            semiNewAvgPrice?: number;
+            /** Format: double */
+            oldAvgPrice?: number;
+        };
+        RsDataListRegionBuildAgeAvgPriceDto: {
+            resultCode: string;
+            /** Format: int32 */
+            statusCode: number;
+            msg: string;
+            data: components["schemas"]["RegionBuildAgeAvgPriceDto"][];
             success: boolean;
             fail: boolean;
         };
@@ -174,7 +275,30 @@ export interface operations {
             };
         };
     };
-    avgPrice: {
+    getTradingVolumeByRegion: {
+        parameters: {
+            query: {
+                statYear: number;
+                statHalf: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RsDataListRegionCountDto"];
+                };
+            };
+        };
+    };
+    getAvgPrice: {
         parameters: {
             query: {
                 statYear: number;
@@ -197,7 +321,7 @@ export interface operations {
             };
         };
     };
-    avgPriceByRegion: {
+    getAvgPriceByRegion: {
         parameters: {
             query: {
                 statYear: number;
@@ -216,6 +340,52 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["RsDataListAvgPricePerAreaDto"];
+                };
+            };
+        };
+    };
+    getAvgPriceChangedByRegion: {
+        parameters: {
+            query: {
+                currYear: number;
+                currHalf: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RsDataListRegionPriceChangeDto"];
+                };
+            };
+        };
+    };
+    getAvgPriceByBuildAge: {
+        parameters: {
+            query: {
+                statYear: number;
+                statHalf: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RsDataListRegionBuildAgeAvgPriceDto"];
                 };
             };
         };
