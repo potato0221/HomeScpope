@@ -51,7 +51,7 @@ logging:
 custom:
   dev:
     cookieDomain: localhost
-    frontUrl: "http://localhost:5173"
+    frontUrl: "http://localhost:3000"
     backUrl: "http://localhost:${server.port}"
   prod:
     cookieDomain: www.homeScope.kys.blue
@@ -68,3 +68,5 @@ custom:
     dirPath: c:/temp/homescope_dev
   api:
     key: ON_SECRET
+
+

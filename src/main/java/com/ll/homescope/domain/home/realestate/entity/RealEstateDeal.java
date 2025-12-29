@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 
 import java.time.LocalDate;
 
@@ -23,6 +22,5 @@ public class RealEstateDeal {
     private int buildYear;
     private String transactionType;
     private String propertyType;  // // APT, VILLA, HOUSE 등
-    private GeoPoint location; // 위도, 경도
 
 }
