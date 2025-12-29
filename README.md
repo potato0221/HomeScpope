@@ -65,14 +65,15 @@
 
 ```bash
 docker-compose up -d
+```
 
 컨테이너 실행 후 Spring Boot 애플리케이션 실행
 
 ### Frontend
 npm install은 최초 실행 시 또는 의존성이 변경된 경우에 실행합니다.
 
-```
+```bash
 npm install 
 npm run dev
-
+```
 
