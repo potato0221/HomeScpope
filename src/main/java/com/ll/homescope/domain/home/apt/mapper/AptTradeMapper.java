@@ -60,14 +60,14 @@ public class AptTradeMapper {
         String month = String.format("%02d", Integer.parseInt(item.getDealMonth()));
         String day   = String.format("%02d", Integer.parseInt(item.getDealDay()));
 
-        String id = areaCode + "-" +
-                item.getAptNm() + "-" +
-                item.getFloor() + "층" +
-                areaPyeong + "평" +
+        String dealKey = areaCode + " - " +
+                item.getAptNm() + " - " +
+                item.getFloor() + "층 - " +
+                areaPyeong + "평 - " +
                 item.getDealYear() + month + day;
 
 
-        id = id.replace(" ", "").replace(",", "");
+        dealKey = dealKey.replace(",", "");
 
         List<String> parts = new ArrayList<>();
 
@@ -87,7 +87,7 @@ public class AptTradeMapper {
         String complexName = String.join(" ", parts);
 
         return RealEstateDeal.builder()
-                .id(id)
+                .dealKey(dealKey)
                 .region(region)
                 .complexName(complexName)
                 .dealDate(dealDate)

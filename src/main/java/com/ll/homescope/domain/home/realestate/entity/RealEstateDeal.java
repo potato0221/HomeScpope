@@ -13,6 +13,7 @@ import java.time.LocalDate;
 public class RealEstateDeal {
     @Id
     private String id;
+    private String dealKey;
     private String region;
     private String complexName;
     private LocalDate dealDate;
