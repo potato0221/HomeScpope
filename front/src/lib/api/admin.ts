@@ -4,10 +4,14 @@ export function addArea() {
   return client.POST("/api/v1/area/add");
 }
 
-export function fetchApt(collectedYear: number, collectedHalf: string) {
-  return client.GET("/api/v1/apt/add", {
+export function fetchApt(
+  collectedYear: number,
+  collectedHalf: string,
+  propertyType: string,
+) {
+  return client.GET("/api/v1/deal/add", {
     params: {
-      query: { collectedYear, collectedHalf },
+      query: { collectedYear, collectedHalf, propertyType },
     },
   });
 }

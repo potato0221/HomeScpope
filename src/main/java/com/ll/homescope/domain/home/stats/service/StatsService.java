@@ -1,11 +1,11 @@
-package com.ll.homescope.domain.home.realestate.service;
+package com.ll.homescope.domain.home.stats.service;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
-import com.ll.homescope.domain.home.apt.repository.CollectedPeriodRepository;
-import com.ll.homescope.domain.home.realestate.dto.*;
+import com.ll.homescope.domain.home.deal.repository.CollectedPeriodRepository;
+import com.ll.homescope.domain.home.stats.dto.*;
 import com.ll.homescope.global.enums.HalfType;
 import com.ll.homescope.global.enums.Msg;
 import com.ll.homescope.global.exceptions.GlobalException;
@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 
 @Service
 @RequiredArgsConstructor
-public class RealEstateStatsService {
+public class StatsService {
 
     private final ElasticsearchClient esClient;
     private final CollectedPeriodRepository collectedPeriodRepository;

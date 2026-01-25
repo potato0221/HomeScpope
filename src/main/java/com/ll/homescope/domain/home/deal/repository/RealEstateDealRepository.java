@@ -1,6 +1,6 @@
-package com.ll.homescope.domain.home.realestate.repository;
+package com.ll.homescope.domain.home.deal.repository;
 
-import com.ll.homescope.domain.home.realestate.entity.RealEstateDeal;
+import com.ll.homescope.domain.home.deal.entity.RealEstateDeal;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 public interface RealEstateDealRepository extends ElasticsearchRepository<RealEstateDeal, String> {

@@ -1,4 +1,4 @@
-package com.ll.homescope.domain.home.realestate.entity;
+package com.ll.homescope.domain.home.deal.entity;
 
 import lombok.Builder;
 import lombok.Data;

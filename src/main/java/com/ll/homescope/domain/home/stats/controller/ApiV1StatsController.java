@@ -1,8 +1,8 @@
-package com.ll.homescope.domain.home.realestate.controller;
+package com.ll.homescope.domain.home.stats.controller;
 
 
-import com.ll.homescope.domain.home.realestate.dto.*;
-import com.ll.homescope.domain.home.realestate.service.RealEstateStatsService;
+import com.ll.homescope.domain.home.stats.dto.*;
+import com.ll.homescope.domain.home.stats.service.StatsService;
 import com.ll.homescope.global.enums.HalfType;
 import com.ll.homescope.global.enums.Msg;
 import com.ll.homescope.global.rsData.RsData;
@@ -19,9 +19,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/stats")
 @RequiredArgsConstructor
-public class ApiV1RealEstateStatsController {
+public class ApiV1StatsController {
 
-    private final RealEstateStatsService realEstateStatsService;
+    private final StatsService statsService;
 
     @GetMapping("/avg-price")
     @Operation(summary = "지역 별 평균 값")
@@ -30,7 +30,7 @@ public class ApiV1RealEstateStatsController {
             @RequestParam String statHalf
             ) throws IOException {
 
-        List<AvgPriceDto> results = realEstateStatsService.avgPrice(statYear, statHalf);
+        List<AvgPriceDto> results = statsService.avgPrice(statYear, statHalf);
 
         return RsData.of(Msg.E200_1_INQUIRY_SUCCEED, results);
     }
@@ -42,7 +42,7 @@ public class ApiV1RealEstateStatsController {
             @RequestParam String statHalf
     ) throws IOException {
 
-        List<AvgPricePerAreaDto> results = realEstateStatsService.avgPricePerArea(statYear, statHalf);
+        List<AvgPricePerAreaDto> results = statsService.avgPricePerArea(statYear, statHalf);
 
         return RsData.of(Msg.E200_1_INQUIRY_SUCCEED, results);
     }
@@ -54,7 +54,7 @@ public class ApiV1RealEstateStatsController {
             @RequestParam String statHalf
     ) throws IOException {
 
-        List<RegionCountDto> results = realEstateStatsService.topRegionByCount(statYear, statHalf);
+        List<RegionCountDto> results = statsService.topRegionByCount(statYear, statHalf);
 
         return RsData.of(Msg.E200_1_INQUIRY_SUCCEED, results);
     }
@@ -69,7 +69,7 @@ public class ApiV1RealEstateStatsController {
         int prevYear = currHalf.equals(HalfType.H2.name()) ? currYear : currYear - 1;
         String prevHalf = currHalf.equals(HalfType.H2.name()) ? HalfType.H1.name() : HalfType.H2.name();
 
-        List<RegionPriceChangeDto> results = realEstateStatsService.avgPriceChangeByRegion(prevYear, prevHalf, currYear, currHalf);
+        List<RegionPriceChangeDto> results = statsService.avgPriceChangeByRegion(prevYear, prevHalf, currYear, currHalf);
 
         return RsData.of(Msg.E200_1_INQUIRY_SUCCEED, results);
     }
@@ -81,7 +81,7 @@ public class ApiV1RealEstateStatsController {
             @RequestParam String statHalf
     ) throws IOException {
 
-        List<RegionBuildAgeAvgPriceDto> results = realEstateStatsService.avgPriceByRegionAndBuildAge(statYear, statHalf);
+        List<RegionBuildAgeAvgPriceDto> results = statsService.avgPriceByRegionAndBuildAge(statYear, statHalf);
 
         return RsData.of(Msg.E200_1_INQUIRY_SUCCEED, results);
     }

@@ -106,7 +106,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/apt/collected/list": {
+    "/api/v1/deal/collected/list": {
         parameters: {
             query?: never;
             header?: never;
@@ -123,7 +123,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/apt/add": {
+    "/api/v1/deal/add": {
         parameters: {
             query?: never;
             header?: never;
@@ -236,6 +236,7 @@ export interface components {
             /** Format: int32 */
             statYear?: number;
             statHalf?: string;
+            propertyType?: string;
         };
         RsDataListCollectedPeriodDto: {
             resultCode: string;
@@ -415,6 +416,7 @@ export interface operations {
             query: {
                 collectedYear: number;
                 collectedHalf: string;
+                propertyType: string;
             };
             header?: never;
             path?: never;

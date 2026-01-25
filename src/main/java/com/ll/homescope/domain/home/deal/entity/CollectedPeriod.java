@@ -1,6 +1,7 @@
-package com.ll.homescope.domain.home.apt.entity;
+package com.ll.homescope.domain.home.deal.entity;
 
 import com.ll.homescope.global.enums.HalfType;
+import com.ll.homescope.global.enums.PropertyType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -27,4 +28,9 @@ public class CollectedPeriod {
     @Column(nullable = false, length = 2)
     @JdbcTypeCode(SqlTypes.VARCHAR)
     private HalfType statHalf;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    private PropertyType propertyType;
 }

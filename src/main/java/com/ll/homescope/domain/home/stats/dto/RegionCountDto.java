@@ -1,4 +1,4 @@
-package com.ll.homescope.domain.home.realestate.dto;
+package com.ll.homescope.domain.home.stats.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

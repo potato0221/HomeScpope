@@ -8,6 +8,7 @@ export default function AdminAptFetcher() {
   const [loading, setLoading] = useState(false);
   const [collectedYear, setYear] = useState("2025");
   const [collectedHalf, setHalf] = useState<"H1" | "H2">("H1");
+  const [propertyType, setType] = useState("APT");
 
   const handleAddArea = async () => {
     setLoading(true);
@@ -29,7 +30,8 @@ export default function AdminAptFetcher() {
 
     const { data, error } = await fetchApt(
       Number(collectedYear),
-      collectedHalf
+      collectedHalf,
+      propertyType,
     );
 
     setLoading(false);
@@ -68,10 +70,24 @@ export default function AdminAptFetcher() {
         <select
           className="border p-2"
           value={collectedHalf}
-          onChange={(e) => setHalf(e.target.value)}
+          onChange={(e) => setHalf(e.target.value as "H1" | "H2")}
         >
           <option value="H1">상반기</option>
           <option value="H2">하반기</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="mr-2">분기:</label>
+        <select
+          className="border p-2"
+          value={propertyType}
+          onChange={(e) => setType(e.target.value)}
+        >
+          <option value="APT">아파트</option>
+          <option value="VILLA">연립/다세대</option>
+          <option value="HOUSE">단독/다가구</option>
+          <option value="OFFICETEL">오피스텔</option>
         </select>
       </div>
 

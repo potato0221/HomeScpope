@@ -1,6 +1,6 @@
-package com.ll.homescope.domain.home.apt.dto;
+package com.ll.homescope.domain.home.deal.dto;
 
-import com.ll.homescope.domain.home.apt.entity.CollectedPeriod;
+import com.ll.homescope.domain.home.deal.entity.CollectedPeriod;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,8 +18,11 @@ public class CollectedPeriodDto {
 
     private String statHalf;
 
+    private String propertyType;
+
     public CollectedPeriodDto(CollectedPeriod collectedPeriod){
         this.statYear = collectedPeriod.getStatYear();
         this.statHalf = collectedPeriod.getStatHalf().toString();
+        this.propertyType = collectedPeriod.getPropertyType().getDisplayName();
     }
 }

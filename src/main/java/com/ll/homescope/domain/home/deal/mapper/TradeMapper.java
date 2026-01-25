@@ -1,18 +1,19 @@
-package com.ll.homescope.domain.home.apt.mapper;
+package com.ll.homescope.domain.home.deal.mapper;
 
-import com.ll.homescope.domain.home.apt.dto.ApartmentTradeResponse;
-import com.ll.homescope.domain.home.realestate.entity.RealEstateDeal;
+import com.ll.homescope.domain.home.deal.dto.TradeResponse;
+import com.ll.homescope.domain.home.deal.entity.RealEstateDeal;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AptTradeMapper {
+public class TradeMapper {
 
     public static List<RealEstateDeal> toRealEstateDeals(
             String areaCode,
             String region,
-            ApartmentTradeResponse response
+            TradeResponse response,
+            String propertyType
     ) {
         List<RealEstateDeal> results = new ArrayList<>();
 
@@ -24,14 +25,14 @@ public class AptTradeMapper {
             return results;
         }
 
-        for (ApartmentTradeResponse.Item item : response.getBody().getItems().getItem()) {
-            results.add(toRealEstateDeal(areaCode, region, item));
+        for (TradeResponse.Item item : response.getBody().getItems().getItem()) {
+            results.add(toRealEstateDeal(areaCode, region, item, propertyType));
         }
 
         return results;
     }
 
-    public static RealEstateDeal toRealEstateDeal(String areaCode, String region, ApartmentTradeResponse.Item item) {
+    public static RealEstateDeal toRealEstateDeal(String areaCode, String region, TradeResponse.Item item, String propertyType) {
 
         // 날짜 변환 YYYY-MM-DD
         LocalDate dealDate = LocalDate.of(
@@ -44,25 +45,26 @@ public class AptTradeMapper {
         long price = parsePrice(item.getDealAmount());
 
         // 면적
-        double area = parseDouble(item.getExcluUseAr());
+        double area = item.getMainArea();
 
         // 층
-        int floor = parseInt(item.getFloor());
+        int floor = item.getFloorSafe();
 
         // 건축 년도
         int buildYear = parseInt(item.getBuildYear());
 
         double areaPyeong = Math.round(
-                (Double.parseDouble(item.getExcluUseAr()) / 3.305785) * 100
+                (item.getMainArea() / 3.305785) * 100
         ) / 100.0;
 
 
         String month = String.format("%02d", Integer.parseInt(item.getDealMonth()));
         String day   = String.format("%02d", Integer.parseInt(item.getDealDay()));
+        String floorPart = floor > 0 ? floor + "층 - " : "";
 
         String dealKey = areaCode + " - " +
-                item.getAptNm() + " - " +
-                item.getFloor() + "층 - " +
+                item.getBuildingName() + " - " +
+                floorPart +
                 areaPyeong + "평 - " +
                 item.getDealYear() + month + day;
 
@@ -80,8 +82,8 @@ public class AptTradeMapper {
         if (item.getJibun() != null && !item.getJibun().isBlank()) {
             parts.add(item.getJibun());
         }
-        if (item.getAptNm() != null && !item.getAptNm().isBlank()) {
-            parts.add(item.getAptNm());
+        if (item.getBuildingName() != null && !item.getBuildingName().isBlank()) {
+            parts.add(item.getBuildingName());
         }
 
         String complexName = String.join(" ", parts);
@@ -96,7 +98,7 @@ public class AptTradeMapper {
                 .floor(floor)
                 .buildYear(buildYear)
                 .transactionType(item.getDealingGbn())
-                .propertyType("APT")
+                .propertyType(propertyType)
                 .build();
     }
 

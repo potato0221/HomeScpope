@@ -1,8 +1,8 @@
-package com.ll.homescope.domain.home.apt.controller;
+package com.ll.homescope.domain.home.deal.controller;
 
 
-import com.ll.homescope.domain.home.apt.dto.CollectedPeriodDto;
-import com.ll.homescope.domain.home.apt.service.AptService;
+import com.ll.homescope.domain.home.deal.dto.CollectedPeriodDto;
+import com.ll.homescope.domain.home.deal.service.DealService;
 import com.ll.homescope.global.enums.Msg;
 import com.ll.homescope.global.rsData.RsData;
 import com.ll.homescope.standard.base.Empty;
@@ -16,19 +16,20 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/apt")
+@RequestMapping("/api/v1/deal")
 @RequiredArgsConstructor
-public class ApiV1AptController {
+public class ApiV1DealController {
 
-    private final AptService aptService;
+    private final DealService dealService;
 
     @GetMapping("/add")
     @Operation(summary = "반기 별 데이터 저장")
     public RsData<Empty> fetch(
             @RequestParam int collectedYear,
-            @RequestParam String collectedHalf
+            @RequestParam String collectedHalf,
+            @RequestParam String propertyType
     ) {
-        aptService.fetchByYear(collectedYear, collectedHalf);
+        dealService.fetchByYear(collectedYear, collectedHalf, propertyType);
 
         return RsData.of(Msg.E200_0_CREATE_SUCCEED);
     }
@@ -37,7 +38,7 @@ public class ApiV1AptController {
     @Operation(summary = "수집 된 년도, 반기 목록")
     public RsData<List<CollectedPeriodDto>> collectedPeriodList(){
 
-        List<CollectedPeriodDto> dtos = aptService.getCollectedPeriodList();
+        List<CollectedPeriodDto> dtos = dealService.getCollectedPeriodList();
 
         return RsData.of(Msg.E200_1_INQUIRY_SUCCEED, dtos);
     }

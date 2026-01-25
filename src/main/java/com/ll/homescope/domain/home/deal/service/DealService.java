@@ -1,18 +1,19 @@
-package com.ll.homescope.domain.home.apt.service;
+package com.ll.homescope.domain.home.deal.service;
 
-import com.ll.homescope.domain.home.apt.client.AptTradeClient;
-import com.ll.homescope.domain.home.apt.dto.ApartmentTradeResponse;
-import com.ll.homescope.domain.home.apt.dto.CollectedPeriodDto;
-import com.ll.homescope.domain.home.apt.entity.CollectedPeriod;
-import com.ll.homescope.domain.home.apt.mapper.AptTradeMapper;
-import com.ll.homescope.domain.home.apt.repository.CollectedPeriodRepository;
+import com.ll.homescope.domain.home.deal.client.TradeClient;
+import com.ll.homescope.domain.home.deal.dto.TradeResponse;
+import com.ll.homescope.domain.home.deal.dto.CollectedPeriodDto;
+import com.ll.homescope.domain.home.deal.entity.CollectedPeriod;
+import com.ll.homescope.domain.home.deal.mapper.TradeMapper;
+import com.ll.homescope.domain.home.deal.repository.CollectedPeriodRepository;
 import com.ll.homescope.domain.home.area.entity.Area;
 import com.ll.homescope.domain.home.area.repository.AreaRepository;
-import com.ll.homescope.domain.home.realestate.entity.RealEstateDeal;
-import com.ll.homescope.domain.home.realestate.repository.RealEstateDealRepository;
+import com.ll.homescope.domain.home.deal.entity.RealEstateDeal;
+import com.ll.homescope.domain.home.deal.repository.RealEstateDealRepository;
 import com.ll.homescope.global.app.AppConfig;
 import com.ll.homescope.global.enums.HalfType;
 import com.ll.homescope.global.enums.Msg;
+import com.ll.homescope.global.enums.PropertyType;
 import com.ll.homescope.global.exceptions.GlobalException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,17 +24,19 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AptService {
+public class DealService {
 
-    private final AptTradeClient aptTradeClient;
+    private final TradeClient tradeClient;
     private final RealEstateDealRepository realEstateDealRepository;
     private final AreaRepository areaRepository;
     private final CollectedPeriodRepository collectedPeriodRepository;
 
     // 분기 별 데이터 불러오기
-    public void fetchByYear(int collectedYear, String collectedHalf) {
+    public void fetchByYear(int collectedYear, String collectedHalf, String propertyType) {
 
         HalfType halfType = HalfType.valueOf(collectedHalf);
+
+        PropertyType type = PropertyType.valueOf(propertyType);
 
         if(collectedPeriodRepository.existsByStatYearAndStatHalf(collectedYear, halfType)){
             throw new GlobalException(Msg.E400_0_ALREADY_REGISTERED_DATA);
@@ -60,7 +63,7 @@ public class AptService {
                 String dealYmd = collectedYear + String.format("%02d", month);
 
                 try {
-                    this.collectAndIndexDeals(code, region, dealYmd);
+                    this.collectAndIndexDeals(code, region, dealYmd, propertyType);
                 } catch (Exception e) {
                     System.out.println("Error region= " + code + region + ", ymd= " + dealYmd);
                     e.printStackTrace();
@@ -78,21 +81,22 @@ public class AptService {
                 CollectedPeriod.builder()
                         .statYear(collectedYear)
                         .statHalf(halfType)
+                        .propertyType(type)
                         .build();
 
         collectedPeriodRepository.save(collectedPeriod);
     }
 
-    private void collectAndIndexDeals(String areaCode, String region, String dealYmd) {
+    private void collectAndIndexDeals(String areaCode, String region, String dealYmd, String propertyType) {
 
         int pageNo = 1;
         int numOfRows = 100;
 
         while (true) {
-            ApartmentTradeResponse response =
-                    aptTradeClient.fetch(areaCode, dealYmd, pageNo, numOfRows);
+            TradeResponse response =
+                    tradeClient.fetch(areaCode, dealYmd, pageNo, numOfRows, propertyType);
 
-            List<RealEstateDeal> deals = AptTradeMapper.toRealEstateDeals(areaCode, region, response);
+            List<RealEstateDeal> deals = TradeMapper.toRealEstateDeals(areaCode, region, response, propertyType);
 
             if (deals.isEmpty()) break;
 
