@@ -27,10 +27,11 @@ public class ApiV1StatsController {
     @Operation(summary = "지역 별 평균 값")
     public RsData<List<AvgPriceDto>> getAvgPrice(
             @RequestParam int statYear,
-            @RequestParam String statHalf
+            @RequestParam String statHalf,
+            @RequestParam String propertyType
             ) throws IOException {
 
-        List<AvgPriceDto> results = statsService.avgPrice(statYear, statHalf);
+        List<AvgPriceDto> results = statsService.avgPrice(statYear, statHalf, propertyType);
 
         return RsData.of(Msg.E200_1_INQUIRY_SUCCEED, results);
     }
@@ -39,10 +40,11 @@ public class ApiV1StatsController {
     @Operation(summary = "지역 별 평당 가격")
     public RsData<List<AvgPricePerAreaDto>> getAvgPriceByRegion(
             @RequestParam int statYear,
-            @RequestParam String statHalf
+            @RequestParam String statHalf,
+            @RequestParam String propertyType
     ) throws IOException {
 
-        List<AvgPricePerAreaDto> results = statsService.avgPricePerArea(statYear, statHalf);
+        List<AvgPricePerAreaDto> results = statsService.avgPricePerArea(statYear, statHalf, propertyType);
 
         return RsData.of(Msg.E200_1_INQUIRY_SUCCEED, results);
     }
@@ -51,10 +53,11 @@ public class ApiV1StatsController {
     @Operation(summary = "지역 별 거래량")
     public RsData<List<RegionCountDto>> getTradingVolumeByRegion(
             @RequestParam int statYear,
-            @RequestParam String statHalf
+            @RequestParam String statHalf,
+            @RequestParam String propertyType
     ) throws IOException {
 
-        List<RegionCountDto> results = statsService.topRegionByCount(statYear, statHalf);
+        List<RegionCountDto> results = statsService.topRegionByCount(statYear, statHalf, propertyType);
 
         return RsData.of(Msg.E200_1_INQUIRY_SUCCEED, results);
     }
@@ -63,13 +66,14 @@ public class ApiV1StatsController {
     @Operation(summary = "지역 별 평균가 증감률")
     public RsData<List<RegionPriceChangeDto>> getAvgPriceChangedByRegion(
             @RequestParam int currYear,
-            @RequestParam String currHalf
+            @RequestParam String currHalf,
+            @RequestParam String propertyType
     ) throws IOException {
 
         int prevYear = currHalf.equals(HalfType.H2.name()) ? currYear : currYear - 1;
         String prevHalf = currHalf.equals(HalfType.H2.name()) ? HalfType.H1.name() : HalfType.H2.name();
 
-        List<RegionPriceChangeDto> results = statsService.avgPriceChangeByRegion(prevYear, prevHalf, currYear, currHalf);
+        List<RegionPriceChangeDto> results = statsService.avgPriceChangeByRegion(prevYear, prevHalf, currYear, currHalf, propertyType);
 
         return RsData.of(Msg.E200_1_INQUIRY_SUCCEED, results);
     }
@@ -78,10 +82,11 @@ public class ApiV1StatsController {
     @Operation(summary = "지역 별 신축/준신축/구축 평균가")
     public RsData<List<RegionBuildAgeAvgPriceDto>> getAvgPriceByBuildAge(
             @RequestParam int statYear,
-            @RequestParam String statHalf
+            @RequestParam String statHalf,
+            @RequestParam String propertyType
     ) throws IOException {
 
-        List<RegionBuildAgeAvgPriceDto> results = statsService.avgPriceByRegionAndBuildAge(statYear, statHalf);
+        List<RegionBuildAgeAvgPriceDto> results = statsService.avgPriceByRegionAndBuildAge(statYear, statHalf, propertyType);
 
         return RsData.of(Msg.E200_1_INQUIRY_SUCCEED, results);
     }

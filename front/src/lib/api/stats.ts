@@ -14,12 +14,17 @@ export async function fetchCollectedPeriods() {
 }
 
 //지역별 평균가
-export async function fetchAvgPrice(statYear: number, statHalf: "H1" | "H2") {
+export async function fetchAvgPrice(
+  statYear: number,
+  statHalf: "H1" | "H2",
+  propertyType: string,
+) {
   const { data, error } = await client.GET("/api/v1/stats/avg-price", {
     params: {
       query: {
         statYear,
         statHalf,
+        propertyType,
       },
     },
   });
@@ -35,12 +40,14 @@ export async function fetchAvgPrice(statYear: number, statHalf: "H1" | "H2") {
 export async function fetchAvgPricePerArea(
   statYear: number,
   statHalf: "H1" | "H2",
+  propertyType: string,
 ) {
   const { data, error } = await client.GET("/api/v1/stats/avg-price/per-area", {
     params: {
       query: {
         statYear,
         statHalf,
+        propertyType,
       },
     },
   });
@@ -56,12 +63,14 @@ export async function fetchAvgPricePerArea(
 export async function fetchTradingVolume(
   statYear: number,
   statHalf: "H1" | "H2",
+  propertyType: string,
 ) {
   const { data, error } = await client.GET("/api/v1/stats/trading-volume", {
     params: {
       query: {
         statYear,
         statHalf,
+        propertyType,
       },
     },
   });
@@ -77,12 +86,14 @@ export async function fetchTradingVolume(
 export async function fetchAvgPriceChange(
   currYear: number,
   currHalf: "H1" | "H2",
+  propertyType: string,
 ) {
   const { data, error } = await client.GET("/api/v1/stats/avg-price/change", {
     params: {
       query: {
         currYear,
         currHalf,
+        propertyType,
       },
     },
   });
@@ -98,6 +109,7 @@ export async function fetchAvgPriceChange(
 export async function fetchAvgPriceByBuildAge(
   statYear: number,
   statHalf: "H1" | "H2",
+  propertyType: string,
 ) {
   const { data, error } = await client.GET(
     "/api/v1/stats/avg-price/build-age",
@@ -106,6 +118,7 @@ export async function fetchAvgPriceByBuildAge(
         query: {
           statYear,
           statHalf,
+          propertyType,
         },
       },
     },

@@ -281,6 +281,7 @@ export interface operations {
             query: {
                 statYear: number;
                 statHalf: string;
+                propertyType: string;
             };
             header?: never;
             path?: never;
@@ -304,6 +305,7 @@ export interface operations {
             query: {
                 statYear: number;
                 statHalf: string;
+                propertyType: string;
             };
             header?: never;
             path?: never;
@@ -327,6 +329,7 @@ export interface operations {
             query: {
                 statYear: number;
                 statHalf: string;
+                propertyType: string;
             };
             header?: never;
             path?: never;
@@ -350,6 +353,7 @@ export interface operations {
             query: {
                 currYear: number;
                 currHalf: string;
+                propertyType: string;
             };
             header?: never;
             path?: never;
@@ -373,6 +377,7 @@ export interface operations {
             query: {
                 statYear: number;
                 statHalf: string;
+                propertyType: string;
             };
             header?: never;
             path?: never;

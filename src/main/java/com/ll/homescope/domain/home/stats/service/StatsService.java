@@ -31,7 +31,8 @@ public class StatsService {
     // 지역별 평균가 컨트롤러 호출 메서드
     public List<AvgPriceDto> avgPrice(
             int statYear,
-            String statHalf
+            String statHalf,
+            String propertyType
     ) throws IOException {
 
         HalfType halfType = HalfType.valueOf(statHalf);
@@ -40,6 +41,7 @@ public class StatsService {
         SearchResponse<Void> response = searchRegionStatsByDateRange(
                 range.from(),
                 range.to(),
+                propertyType,
                 a -> a.aggregations("avg_price",
                         sub -> sub.avg(v -> v.field("price"))
                 )
@@ -68,7 +70,8 @@ public class StatsService {
     // 지역별 평당가 컨트롤러 호출 메서드
     public List<AvgPricePerAreaDto> avgPricePerArea(
             int statYear,
-            String statHalf
+            String statHalf,
+            String propertyType
     ) throws IOException {
 
         HalfType halfType = HalfType.valueOf(statHalf);
@@ -77,6 +80,7 @@ public class StatsService {
         SearchResponse<Void> response = searchRegionStatsByDateRange(
                 range.from(),
                 range.to(),
+                propertyType,
                 a -> a.aggregations("avg_price_per_m2",
                         sub -> sub.avg(v -> v
                                 .script(s -> s
@@ -109,7 +113,8 @@ public class StatsService {
     //지역 별 거래량 컨트롤러 호출 메서드
     public List<RegionCountDto> topRegionByCount(
             int statYear,
-            String statHalf
+            String statHalf,
+            String propertyType
     ) throws IOException {
 
         HalfType halfType = HalfType.valueOf(statHalf);
@@ -118,6 +123,7 @@ public class StatsService {
         SearchResponse<Void> response = searchRegionStatsByDateRange(
                 range.from(),
                 range.to(),
+                propertyType,
                 a -> {}
         );
 
@@ -146,10 +152,11 @@ public class StatsService {
             int prevYear,
             String prevHalf,
             int currYear,
-            String currHalf
+            String currHalf,
+            String propertyType
     ) throws IOException {
 
-        if(!collectedPeriodRepository.existsByStatYearAndStatHalf(prevYear, HalfType.valueOf(prevHalf))){
+        if (!collectedPeriodRepository.existsByStatYearAndStatHalf(prevYear, HalfType.valueOf(prevHalf))) {
             throw new GlobalException(Msg.E404_1_DATA_NOT_FOUND);
         }
 
@@ -160,6 +167,16 @@ public class StatsService {
                 esClient.search(s -> s
                                 .index("real_estate_deals")
                                 .size(0)
+                                .query(q -> q
+                                        .bool(b -> b
+                                                .filter(f -> f
+                                                        .term(t -> t
+                                                                .field("propertyType.keyword")
+                                                                .value(propertyType)
+                                                        )
+                                                )
+                                        )
+                                )
                                 .aggregations("by_region", a -> a
                                         .terms(t -> t
                                                 .field("region.keyword")
@@ -237,7 +254,8 @@ public class StatsService {
     //지역별 신축/준신축/구축 평균가 컨트롤러 호출 메서드
     public List<RegionBuildAgeAvgPriceDto> avgPriceByRegionAndBuildAge(
             int statYear,
-            String statHalf
+            String statHalf,
+            String propertyType
     ) throws IOException {
 
         HalfType halfType = HalfType.valueOf(statHalf);
@@ -253,11 +271,21 @@ public class StatsService {
                                 .index("real_estate_deals")
                                 .size(0)
                                 .query(q -> q
-                                        .range(r -> r
-                                                .number(n -> n
-                                                        .field("dealDate")
-                                                        .gte((double) range.from())
-                                                        .lte((double) range.to())
+                                        .bool(b -> b
+                                                .filter(f -> f
+                                                        .term(t -> t
+                                                                .field("propertyType.keyword")
+                                                                .value(propertyType)
+                                                        )
+                                                )
+                                                .filter(f -> f
+                                                        .range(r -> r
+                                                                .number(n -> n
+                                                                        .field("dealDate")
+                                                                        .gte((double) range.from())
+                                                                        .lte((double) range.to())
+                                                                )
+                                                        )
                                                 )
                                         )
                                 )
@@ -370,6 +398,7 @@ public class StatsService {
     private SearchResponse<Void> searchRegionStatsByDateRange(
             long from,
             long to,
+            String propertyType,
             Consumer<Aggregation.Builder> subAggregation
     ) throws IOException {
 
@@ -385,6 +414,12 @@ public class StatsService {
                                                                 .gte((double) from)
                                                                 .lte((double) to)
                                                         )
+                                                )
+                                        )
+                                        .filter(f -> f
+                                                .term(t -> t
+                                                        .field("propertyType.keyword")
+                                                        .value(propertyType)
                                                 )
                                         )
                                 )
