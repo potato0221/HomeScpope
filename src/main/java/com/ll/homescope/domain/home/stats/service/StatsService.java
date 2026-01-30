@@ -8,6 +8,7 @@ import com.ll.homescope.domain.home.deal.repository.CollectedPeriodRepository;
 import com.ll.homescope.domain.home.stats.dto.*;
 import com.ll.homescope.global.enums.HalfType;
 import com.ll.homescope.global.enums.Msg;
+import com.ll.homescope.global.enums.PropertyType;
 import com.ll.homescope.global.exceptions.GlobalException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -156,7 +157,9 @@ public class StatsService {
             String propertyType
     ) throws IOException {
 
-        if (!collectedPeriodRepository.existsByStatYearAndStatHalf(prevYear, HalfType.valueOf(prevHalf))) {
+        if (!collectedPeriodRepository.existsByStatYearAndStatHalfAndPropertyType(
+                prevYear, HalfType.valueOf(prevHalf), PropertyType.valueOf(propertyType))
+        ) {
             throw new GlobalException(Msg.E404_1_DATA_NOT_FOUND);
         }
 

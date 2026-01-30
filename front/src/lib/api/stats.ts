@@ -17,7 +17,7 @@ export async function fetchCollectedPeriods() {
 export async function fetchAvgPrice(
   statYear: number,
   statHalf: "H1" | "H2",
-  propertyType: string,
+  propertyType: "APT" | "VILLA" | "HOUSE" | "OFFICETEL",
 ) {
   const { data, error } = await client.GET("/api/v1/stats/avg-price", {
     params: {
@@ -40,7 +40,7 @@ export async function fetchAvgPrice(
 export async function fetchAvgPricePerArea(
   statYear: number,
   statHalf: "H1" | "H2",
-  propertyType: string,
+  propertyType: "APT" | "VILLA" | "HOUSE" | "OFFICETEL",
 ) {
   const { data, error } = await client.GET("/api/v1/stats/avg-price/per-area", {
     params: {
@@ -63,7 +63,7 @@ export async function fetchAvgPricePerArea(
 export async function fetchTradingVolume(
   statYear: number,
   statHalf: "H1" | "H2",
-  propertyType: string,
+  propertyType: "APT" | "VILLA" | "HOUSE" | "OFFICETEL",
 ) {
   const { data, error } = await client.GET("/api/v1/stats/trading-volume", {
     params: {
@@ -86,7 +86,7 @@ export async function fetchTradingVolume(
 export async function fetchAvgPriceChange(
   currYear: number,
   currHalf: "H1" | "H2",
-  propertyType: string,
+  propertyType: "APT" | "VILLA" | "HOUSE" | "OFFICETEL",
 ) {
   const { data, error } = await client.GET("/api/v1/stats/avg-price/change", {
     params: {
@@ -109,7 +109,7 @@ export async function fetchAvgPriceChange(
 export async function fetchAvgPriceByBuildAge(
   statYear: number,
   statHalf: "H1" | "H2",
-  propertyType: string,
+  propertyType: "APT" | "VILLA" | "HOUSE" | "OFFICETEL",
 ) {
   const { data, error } = await client.GET(
     "/api/v1/stats/avg-price/build-age",

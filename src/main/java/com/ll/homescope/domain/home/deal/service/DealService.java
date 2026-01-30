@@ -32,13 +32,13 @@ public class DealService {
     private final CollectedPeriodRepository collectedPeriodRepository;
 
     // 분기 별 데이터 불러오기
-    public void fetchByYear(int collectedYear, String collectedHalf, String propertyType) {
+    public void fetchByYear(int collectedYear, String collectedHalf, String collectedProperty) {
 
         HalfType halfType = HalfType.valueOf(collectedHalf);
 
-        PropertyType type = PropertyType.valueOf(propertyType);
+        PropertyType propertyType = PropertyType.valueOf(collectedProperty);
 
-        if(collectedPeriodRepository.existsByStatYearAndStatHalf(collectedYear, halfType)){
+        if(collectedPeriodRepository.existsByStatYearAndStatHalfAndPropertyType(collectedYear, halfType, propertyType)){
             throw new GlobalException(Msg.E400_0_ALREADY_REGISTERED_DATA);
         }
 
@@ -63,7 +63,7 @@ public class DealService {
                 String dealYmd = collectedYear + String.format("%02d", month);
 
                 try {
-                    this.collectAndIndexDeals(code, region, dealYmd, propertyType);
+                    this.collectAndIndexDeals(code, region, dealYmd, collectedProperty);
                 } catch (Exception e) {
                     System.out.println("Error region= " + code + region + ", ymd= " + dealYmd);
                     e.printStackTrace();
@@ -81,7 +81,7 @@ public class DealService {
                 CollectedPeriod.builder()
                         .statYear(collectedYear)
                         .statHalf(halfType)
-                        .propertyType(type)
+                        .propertyType(propertyType)
                         .build();
 
         collectedPeriodRepository.save(collectedPeriod);

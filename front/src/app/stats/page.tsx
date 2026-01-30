@@ -24,6 +24,8 @@ type ChangeSortType = "UP" | "DOWN";
 type BuildAgeSortKey = "NEW" | "SEMI_NEW" | "OLD";
 type BuildAgeRankType = "TOP" | "BOTTOM";
 
+type PropertyType = "APT" | "VILLA" | "HOUSE" | "OFFICETEL";
+
 type CollectedPeriod = {
   statYear: number;
   statHalf: "H1" | "H2";
@@ -34,11 +36,16 @@ type PriceChangeRow = {
   changeRate: number;
 };
 
-export default function ApartmentStatsPage() {
+export default function StatsPage() {
   const [periods, setPeriods] = useState<CollectedPeriod[]>([]);
   const [selectedPeriod, setSelectedPeriod] = useState<CollectedPeriod | null>(
-    null
+    null,
   );
+  const [propertyType, setPropertyType] = useState<PropertyType>("APT");
+
+  const [titlePropertyType, setTitlePropertyType] =
+    useState<PropertyType>("APT");
+  const [titlePeriod, setTitlePeriod] = useState<CollectedPeriod | null>(null);
 
   const [statType, setStatType] = useState<StatType>("AVG_PRICE");
   const [rankType, setRankType] = useState<RankType>("TOP");
@@ -59,6 +66,28 @@ export default function ApartmentStatsPage() {
 
   const [loading, setLoading] = useState(false);
 
+  //년도,반기 중복 제거
+  const uniquePeriods = useMemo(() => {
+    const map = new Map<string, CollectedPeriod>();
+
+    periods.forEach((p) => {
+      const key = `${p.statYear}-${p.statHalf}`;
+      if (!map.has(key)) {
+        map.set(key, p);
+      }
+    });
+
+    return Array.from(map.values());
+  }, [periods]);
+
+  //propertyType 라벨
+  const PROPERTY_LABEL = {
+    APT: "아파트",
+    VILLA: "연립/다세대",
+    HOUSE: "단독/다가구",
+    OFFICETEL: "오피스텔",
+  };
+
   //수집기간 불러오기
   useEffect(() => {
     const loadPeriods = async () => {
@@ -78,15 +107,35 @@ export default function ApartmentStatsPage() {
 
     setLoading(true);
 
+    setTitlePeriod(selectedPeriod);
+    setTitlePropertyType(propertyType);
+
     const [avgRes, perAreaRes, volumeRes, changeRes, buildAgeRes] =
       await Promise.all([
-        fetchAvgPrice(selectedPeriod.statYear, selectedPeriod.statHalf),
-        fetchAvgPricePerArea(selectedPeriod.statYear, selectedPeriod.statHalf),
-        fetchTradingVolume(selectedPeriod.statYear, selectedPeriod.statHalf),
-        fetchAvgPriceChange(selectedPeriod.statYear, selectedPeriod.statHalf),
+        fetchAvgPrice(
+          selectedPeriod.statYear,
+          selectedPeriod.statHalf,
+          propertyType,
+        ),
+        fetchAvgPricePerArea(
+          selectedPeriod.statYear,
+          selectedPeriod.statHalf,
+          propertyType,
+        ),
+        fetchTradingVolume(
+          selectedPeriod.statYear,
+          selectedPeriod.statHalf,
+          propertyType,
+        ),
+        fetchAvgPriceChange(
+          selectedPeriod.statYear,
+          selectedPeriod.statHalf,
+          propertyType,
+        ),
         fetchAvgPriceByBuildAge(
           selectedPeriod.statYear,
-          selectedPeriod.statHalf
+          selectedPeriod.statHalf,
+          propertyType,
         ),
       ]);
 
@@ -144,7 +193,7 @@ export default function ApartmentStatsPage() {
   //거래량 공통 데이터
   const sortedVolumeData = useMemo(() => {
     return [...tradingVolumeData].sort((a, b) =>
-      volumeRankType === "TOP" ? b.count - a.count : a.count - b.count
+      volumeRankType === "TOP" ? b.count - a.count : a.count - b.count,
     );
   }, [tradingVolumeData, volumeRankType]);
 
@@ -190,7 +239,7 @@ export default function ApartmentStatsPage() {
               });
             }}
           >
-            {periods.map((p) => (
+            {uniquePeriods.map((p) => (
               <option
                 key={`${p.statYear}-${p.statHalf}`}
                 value={`${p.statYear}-${p.statHalf}`}
@@ -199,6 +248,17 @@ export default function ApartmentStatsPage() {
               </option>
             ))}
           </select>
+          {/* ===== 거주 유형 선택 ===== */}
+          <select
+            className="border rounded px-3 py-2"
+            value={propertyType}
+            onChange={(e) => setPropertyType(e.target.value as PropertyType)}
+          >
+            <option value="APT">아파트</option>
+            <option value="VILLA">연립/다세대</option>
+            <option value="HOUSE">단독/다가구</option>
+            <option value="OFFICETEL">오피스텔</option>
+          </select>
           <button
             onClick={handleFetch}
             className="px-4 py-2 bg-black text-white rounded"
@@ -206,6 +266,17 @@ export default function ApartmentStatsPage() {
             통계 조회
           </button>
         </div>
+        {/* ===== 이쯤에 propertytype으로 가구 유형 텍스트로 표시하면 좋을듯 ===== */}
+
+        {titlePeriod && (
+          <div className="bg-slate-50 border rounded-xl p-4 mb-6 w-fit">
+            <div className="text-xl font-bold mt-1">
+              {titlePeriod.statYear}년{" "}
+              {titlePeriod.statHalf === "H1" ? "상반기" : "하반기"} ·{" "}
+              {PROPERTY_LABEL[titlePropertyType]}
+            </div>
+          </div>
+        )}
         {/* ===== 평균가 평당가 ===== */}
         <div className="inline-flex rounded-lg border overflow-hidden">
           <button

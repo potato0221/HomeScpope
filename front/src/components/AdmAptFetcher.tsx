@@ -41,7 +41,7 @@ export default function AdminAptFetcher() {
       return;
     }
 
-    alert("수도권 아파트 데이터 수집 완료!");
+    alert("데이터 수집 완료!");
   };
 
   return (
