@@ -36,6 +36,9 @@ type PriceChangeRow = {
   changeRate: number;
 };
 
+export const formatToEok = (price: number) =>
+  `${(price / 100_000_000).toFixed(2)}억`;
+
 export default function StatsPage() {
   const [periods, setPeriods] = useState<CollectedPeriod[]>([]);
   const [selectedPeriod, setSelectedPeriod] = useState<CollectedPeriod | null>(
@@ -218,6 +221,11 @@ export default function StatsPage() {
       return buildAgeRankType === "TOP" ? diff : -diff;
     });
   }, [buildAgeData, buildAgeSortKey, buildAgeRankType]);
+
+  //카드 슬라이스(10)
+  const buildAgeCardData = useMemo(() => {
+    return sortedBuildAgeCards.slice(0, 10);
+  }, [sortedBuildAgeCards]);
 
   return (
     <div className="w-full bg-slate-50">
@@ -508,18 +516,105 @@ export default function StatsPage() {
             </div>
           </div>
 
-          <div className="max-h-[620px] overflow-y-auto pr-2">
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {sortedBuildAgeCards.map((d) => (
-                <RegionBuildAgeCard
-                  key={d.region}
-                  region={d.region}
-                  newPrice={d.newAvgPrice}
-                  semiNewPrice={d.semiNewAvgPrice}
-                  oldPrice={d.oldAvgPrice}
-                  buildAgeType={buildAgeSortKey}
-                />
-              ))}
+          {/* ===== 4-1 카드 ===== */}
+          <div className="grid grid-cols-[3fr_1.5fr] gap-6">
+            <div className="max-h-[520px] overflow-y-auto pr-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6">
+                {buildAgeCardData.map((d) => (
+                  <RegionBuildAgeCard
+                    key={d.region}
+                    region={d.region}
+                    newPrice={d.newAvgPrice}
+                    semiNewPrice={d.semiNewAvgPrice}
+                    oldPrice={d.oldAvgPrice}
+                    buildAgeType={buildAgeSortKey}
+                  />
+                ))}
+              </div>
+            </div>
+            {/* ===== 4-2 테이블 ===== */}
+            <div className="bg-white rounded-xl border p-6">
+              <h3 className="text-md font-semibold mb-4">지역별 평균가 전체</h3>
+
+              <div className="max-h-[400px] overflow-y-auto">
+                <table className="w-full text-sm">
+                  <thead className="sticky top-0 bg-white">
+                    <tr className="border-b">
+                      <th className="text-left py-2">지역</th>
+                      <th
+                        className={`text-right ${
+                          buildAgeSortKey === "NEW"
+                            ? "text-blue-600 font-semibold"
+                            : ""
+                        }`}
+                      >
+                        신축
+                      </th>
+
+                      <th
+                        className={`text-right ${
+                          buildAgeSortKey === "SEMI_NEW"
+                            ? "text-purple-600 font-semibold"
+                            : ""
+                        }`}
+                      >
+                        준신축
+                      </th>
+
+                      <th
+                        className={`text-right ${
+                          buildAgeSortKey === "OLD"
+                            ? "text-green-600 font-semibold"
+                            : ""
+                        }`}
+                      >
+                        구축
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {sortedBuildAgeCards.map((row) => (
+                      <tr
+                        key={row.region}
+                        className="border-b last:border-0 even:bg-slate-50 hover:bg-slate-100 transition"
+                      >
+                        <td className="py-2 font-medium">{row.region}</td>
+
+                        <td
+                          className={`text-right ${
+                            buildAgeSortKey === "NEW"
+                              ? "text-blue-600 font-medium"
+                              : ""
+                          }`}
+                        >
+                          {formatToEok(row.newAvgPrice)}
+                        </td>
+
+                        <td
+                          className={`text-right ${
+                            buildAgeSortKey === "SEMI_NEW"
+                              ? "text-purple-600 font-medium"
+                              : ""
+                          }`}
+                        >
+                          {formatToEok(row.semiNewAvgPrice)}
+                        </td>
+
+                        <td
+                          className={`text-right ${
+                            buildAgeSortKey === "OLD"
+                              ? "text-green-600 font-medium"
+                              : ""
+                          }`}
+                        >
+                          {formatToEok(row.oldAvgPrice)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>

@@ -18,7 +18,7 @@ export function PriceChangeZeroBaselineSection({ data, sortType }: Props) {
     const sorted = [...data].sort((a, b) =>
       sortType === "UP"
         ? b.changeRate - a.changeRate
-        : a.changeRate - b.changeRate
+        : a.changeRate - b.changeRate,
     );
 
     return sorted.slice(0, 10);
@@ -28,7 +28,7 @@ export function PriceChangeZeroBaselineSection({ data, sortType }: Props) {
     return [...data].sort((a, b) =>
       sortType === "UP"
         ? b.changeRate - a.changeRate
-        : a.changeRate - b.changeRate
+        : a.changeRate - b.changeRate,
     );
   }, [data, sortType]);
 
@@ -49,7 +49,7 @@ export function PriceChangeZeroBaselineSection({ data, sortType }: Props) {
   }, [data]);
 
   return (
-    <div className="grid grid-cols-[3fr_1.2fr] gap-6">
+    <div className="grid grid-cols-[3fr_1.5fr] gap-6">
       {/* ================= LEFT : CHART ================= */}
       <div className="bg-white rounded-xl border p-6">
         <h2 className="text-lg font-semibold mb-4">
