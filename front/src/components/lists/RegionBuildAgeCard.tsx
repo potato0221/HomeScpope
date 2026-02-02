@@ -1,12 +1,12 @@
 import { formatKoreanPrice } from "@/lib/utils/priceFormatter";
 
-type CardProps = {
+interface CardProps {
   region: string;
   newPrice: number;
   semiNewPrice: number;
   oldPrice: number;
   buildAgeType: "NEW" | "SEMI_NEW" | "OLD";
-};
+}
 
 export function RegionBuildAgeCard({
   region,
