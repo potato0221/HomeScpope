@@ -26,13 +26,11 @@ public class AreaService {
     @Transactional
     public void saveArea() {
 
+        if(areaRepository.count()>0) {
+            throw new GlobalException(Msg.E400_0_ALREADY_REGISTERED_DATA);
+        }
+
         try {
-
-            if(areaRepository.count()>0) {
-                System.out.println("이미 데이터가 있습니다.");
-                return;
-            }
-
             String csvFilepath = AppConfig.getCsvFilePath();
 
             CSVReader csvReader =

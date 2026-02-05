@@ -8,10 +8,7 @@ import com.ll.homescope.global.rsData.RsData;
 import com.ll.homescope.standard.base.Empty;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,7 +19,7 @@ public class ApiV1DealController {
 
     private final DealService dealService;
 
-    @GetMapping("/add")
+    @PostMapping("/admin/add")
     @Operation(summary = "반기 별 데이터 저장")
     public RsData<Empty> fetch(
             @RequestParam int collectedYear,

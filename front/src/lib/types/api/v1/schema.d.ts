@@ -4,7 +4,24 @@
  */
 
 export interface paths {
-    "/api/v1/area/add": {
+    "/api/v1/deal/admin/add": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** 반기 별 데이터 저장 */
+        post: operations["fetch"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/area/admin/add": {
         parameters: {
             query?: never;
             header?: never;
@@ -115,23 +132,6 @@ export interface paths {
         };
         /** 수집 된 년도, 반기 목록 */
         get: operations["collectedPeriodList"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/deal/add": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** 반기 별 데이터 저장 */
-        get: operations["fetch"];
         put?: never;
         post?: never;
         delete?: never;
@@ -256,6 +256,30 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    fetch: {
+        parameters: {
+            query: {
+                collectedYear: number;
+                collectedHalf: string;
+                propertyType: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RsDataEmpty"];
+                };
+            };
+        };
+    };
     addAreas: {
         parameters: {
             query?: never;
@@ -412,30 +436,6 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["RsDataListCollectedPeriodDto"];
-                };
-            };
-        };
-    };
-    fetch: {
-        parameters: {
-            query: {
-                collectedYear: number;
-                collectedHalf: string;
-                propertyType: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description OK */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "*/*": components["schemas"]["RsDataEmpty"];
                 };
             };
         };

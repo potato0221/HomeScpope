@@ -17,7 +17,7 @@ public class ApiV1AreaController {
 
     private final AreaService areaService;
 
-    @PostMapping("/add")
+    @PostMapping("/admin/add")
     @Operation(summary = "지역 정보 등록")
     public RsData<Empty> addAreas(){
 
