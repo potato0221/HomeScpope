@@ -1,6 +1,7 @@
 interface DataItem {
   region: string;
   changeRate: number;
+  rank: number;
 }
 
 export function PriceChangeList({
@@ -17,13 +18,13 @@ export function PriceChangeList({
       </h3>
 
       <div className="space-y-2">
-        {data.map((d, idx) => (
+        {data.map((d) => (
           <div
             key={d.region}
             className="flex justify-between items-center border rounded px-3 py-2"
           >
             <span className="text-sm text-gray-600">
-              {idx + 1}. {d.region}
+              {d.rank}. {d.region}
             </span>
 
             <span

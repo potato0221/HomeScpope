@@ -1,7 +1,7 @@
 import { formatKoreanPrice } from "@/lib/utils/priceFormatter";
 
 type Props = {
-  data: { region: string; value: number }[];
+  data: { region: string; value: number; rank: number }[];
   statType: "AVG_PRICE" | "AVG_PRICE_PER_AREA";
 };
 
@@ -22,9 +22,9 @@ export function AvgPriceTable({ data, statType }: Props) {
             </tr>
           </thead>
           <tbody>
-            {data.map((d, idx) => (
+            {data.map((d) => (
               <tr key={d.region} className="border-b last:border-0">
-                <td className="py-2">{idx + 1}</td>
+                <td className="py-2">{d.rank}</td>
                 <td>{d.region}</td>
                 <td className="text-right">{formatKoreanPrice(d.value)}원</td>
               </tr>

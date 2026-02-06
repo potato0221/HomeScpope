@@ -17,9 +17,11 @@ type DataItem = {
 export default function AvgPriceSection({
   avgPriceData,
   avgPricePerAreaData,
+  keyword,
 }: {
   avgPriceData: DataItem[];
   avgPricePerAreaData: DataItem[];
+  keyword: string;
 }) {
   const [statType, setStatType] = useState<StatType>("AVG_PRICE");
   const [rankType, setRankType] = useState<RankType>("TOP");
@@ -31,21 +33,32 @@ export default function AvgPriceSection({
     statType === "AVG_PRICE" ? d.avgPrice : d.avgPricePerArea;
 
   //정렬
-  const sortedPriceData = useMemo(() => {
-    return [...baseData].sort((a, b) =>
-      rankType === "TOP"
-        ? getValue(b) - getValue(a)
-        : getValue(a) - getValue(b),
-    );
+  const rankedPriceData = useMemo(() => {
+    return [...baseData]
+      .sort((a, b) =>
+        rankType === "TOP"
+          ? getValue(b) - getValue(a)
+          : getValue(a) - getValue(b),
+      )
+      .map((row, idx) => ({
+        ...row,
+        rank: idx + 1,
+      }));
   }, [baseData, statType, rankType]);
+
+  const filterdRankedPriceData = useMemo(() => {
+    if (!keyword) return rankedPriceData;
+
+    return rankedPriceData.filter((r) => r.region.includes(keyword));
+  }, [rankedPriceData, keyword]);
 
   //차트용 슬라이스(10)
   const chartData = useMemo(() => {
-    return sortedPriceData.slice(0, 10).map((r) => ({
+    return filterdRankedPriceData.slice(0, 10).map((r) => ({
       region: r.region,
       value: getValue(r),
     }));
-  }, [sortedPriceData, statType]);
+  }, [filterdRankedPriceData, statType]);
 
   //전체 요약 데이터
   const summary = useMemo(() => {
@@ -132,8 +145,8 @@ export default function AvgPriceSection({
         {/* ===== 테이블 ===== */}
         <AvgPriceTable
           statType={statType}
-          data={sortedPriceData.map((d, idx) => ({
-            rank: idx + 1,
+          data={filterdRankedPriceData.map((d) => ({
+            rank: d.rank,
             region: d.region,
             value: getValue(d),
           }))}

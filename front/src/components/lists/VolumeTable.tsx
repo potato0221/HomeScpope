@@ -1,5 +1,5 @@
 type Props = {
-  data: { region: string; count: number }[];
+  data: { region: string; count: number; rank: number }[];
 };
 
 export function VolumeTable({ data }: Props) {
@@ -17,9 +17,9 @@ export function VolumeTable({ data }: Props) {
             </tr>
           </thead>
           <tbody>
-            {data.map((d, idx) => (
+            {data.map((d) => (
               <tr key={d.region} className="border-b last:border-0">
-                <td className="py-2">{idx + 1}</td>
+                <td className="py-2">{d.rank}</td>
                 <td>{d.region}</td>
                 <td className="text-right">{d.count.toLocaleString()}건</td>
               </tr>

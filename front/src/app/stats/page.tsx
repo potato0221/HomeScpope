@@ -37,6 +37,7 @@ export default function StatsPage() {
   const [priceChangeError, setPriceChangeError] = useState<string | null>(null);
   const [buildAgeData, setBuildAgeData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [keyword, setKeyword] = useState("");
 
   //년도,반기 중복 제거
   const uniquePeriods = useMemo(() => {
@@ -174,6 +175,12 @@ export default function StatsPage() {
             통계 조회
           </button>
         </div>
+        <input
+          className="border rounded px-3 py-2"
+          placeholder="지역명 검색"
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+        />
         {/* ===== 년도 / 가구 유형 ===== */}
         {titlePeriod && (
           <div className="bg-slate-50 border rounded-xl p-4 mb-6 w-fit">
@@ -189,16 +196,17 @@ export default function StatsPage() {
         <AvgPriceSection
           avgPriceData={avgPriceData}
           avgPricePerAreaData={avgPricePerAreaData}
+          keyword={keyword}
         />
 
         {/* ===== 2 거래량 ===== */}
-        <VolumeSection data={tradingVolumeData} />
+        <VolumeSection rows={tradingVolumeData} keyword={keyword} />
 
         {/* ===== 3 평균가 증감률 ===== */}
-        <PriceChangeSection data={priceChangeData} />
+        <PriceChangeSection rows={priceChangeData} keyword={keyword} />
 
         {/* ===== 4 지역별 신축 준신축 구축 평균가 ===== */}
-        <RegionBuildAgeSection rows={buildAgeData} />
+        <RegionBuildAgeSection rows={buildAgeData} keyword={keyword} />
       </div>
     </div>
   );

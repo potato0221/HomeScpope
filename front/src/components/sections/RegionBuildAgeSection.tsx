@@ -14,38 +14,56 @@ interface BuildAgeRow {
 
 interface RegionBuildAgeSectionProps {
   rows: BuildAgeRow[];
+  keyword: string;
 }
 
 export default function RegionBuildAgeSection({
   rows,
+  keyword,
 }: RegionBuildAgeSectionProps) {
   const [buildAgeSortKey, setBuildAgeSortKey] = useState<BuildageType>("NEW");
   const [buildAgeRankType, setBuildAgeRankType] = useState<RankType>("TOP");
 
   //신구축 정렬
-  const sortedBuildAge = useMemo(() => {
+  const rankedBuildAge = useMemo(() => {
     const getValue = (row: any) => {
       if (buildAgeSortKey === "NEW") return row.newAvgPrice;
       if (buildAgeSortKey === "SEMI_NEW") return row.semiNewAvgPrice;
       return row.oldAvgPrice;
     };
 
-    return [...rows].sort((a, b) => {
-      const diff = getValue(b) - getValue(a);
-      return buildAgeRankType === "TOP" ? diff : -diff;
-    });
+    return [...rows]
+      .sort((a, b) => {
+        const diff = getValue(b) - getValue(a);
+        return buildAgeRankType === "TOP" ? diff : -diff;
+      })
+      .map((row, index) => ({
+        ...row,
+        rank: index + 1,
+      }));
   }, [rows, buildAgeSortKey, buildAgeRankType]);
+
+  //검색 데이터
+  const filteredRankedBuildAge = useMemo(() => {
+    if (!keyword) return rankedBuildAge;
+
+    return rankedBuildAge.filter((r) => r.region.includes(keyword));
+  }, [rankedBuildAge, keyword]);
 
   //카드 슬라이스(10)
   const buildAgeCardData = useMemo(() => {
-    return sortedBuildAge.slice(0, 10);
-  }, [sortedBuildAge]);
+    return filteredRankedBuildAge.slice(0, 10);
+  }, [filteredRankedBuildAge]);
 
   return (
     <div className="bg-white rounded-xl border p-6">
       <h2 className="text-lg font-semibold mb-6">
         지역별 신축 / 준신축 / 구축 평균가
       </h2>
+
+      {keyword && filteredRankedBuildAge.length === 0 && (
+        <div className="text-sm text-gray-400">검색 결과가 없습니다.</div>
+      )}
 
       {/* ===== 정렬 버튼 ===== */}
       <div className="flex gap-4 mb-6">
@@ -116,7 +134,7 @@ export default function RegionBuildAgeSection({
         </div>
         {/* ===== 테이블 ===== */}
         <RegionBuildAgeTable
-          rows={sortedBuildAge}
+          rows={filteredRankedBuildAge}
           buildAgeType={buildAgeSortKey}
         />
       </div>

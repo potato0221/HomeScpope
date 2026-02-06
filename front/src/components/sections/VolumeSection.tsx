@@ -7,39 +7,55 @@ interface DataItem {
   count: number;
 }
 
-export default function VolumeSection({ data }: { data: DataItem[] }) {
-  const [sortType, setSortType] = useState<"TOP" | "BOTTOM">("TOP");
+interface Props {
+  rows: DataItem[];
+  keyword: string;
+}
 
-  const sorted = useMemo(() => {
-    return [...data].sort((a, b) =>
-      sortType === "TOP" ? b.count - a.count : a.count - b.count,
-    );
-  }, [data, sortType]);
+export default function VolumeSection({ rows, keyword }: Props) {
+  const [rankType, setRankType] = useState<"TOP" | "BOTTOM">("TOP");
+
+  const rankedVolume = useMemo(() => {
+    return [...rows]
+      .sort((a, b) =>
+        rankType === "TOP" ? b.count - a.count : a.count - b.count,
+      )
+      .map((row, idx) => ({
+        ...row,
+        rank: idx + 1,
+      }));
+  }, [rows, rankType]);
+
+  const filteredRankedVolume = useMemo(() => {
+    if (!keyword) return rankedVolume;
+
+    return rankedVolume.filter((r) => r.region.includes(keyword));
+  }, [rankedVolume, keyword]);
 
   //차트용 슬라이스(10)
   const volumeChartData = useMemo(() => {
-    return sorted.slice(0, 10).map((d) => ({
+    return filteredRankedVolume.slice(0, 10).map((d) => ({
       region: d.region,
       value: d.count,
     }));
-  }, [sorted]);
+  }, [filteredRankedVolume]);
 
   return (
     <div>
       <div className="inline-flex rounded-lg border overflow-hidden mb-4">
         <button
           className={`px-4 py-2 text-sm ${
-            sortType === "TOP" ? "bg-slate-800 text-white" : "bg-white"
+            rankType === "TOP" ? "bg-slate-800 text-white" : "bg-white"
           }`}
-          onClick={() => setSortType("TOP")}
+          onClick={() => setRankType("TOP")}
         >
           상위 10
         </button>
         <button
           className={`px-4 py-2 text-sm ${
-            sortType === "BOTTOM" ? "bg-slate-800 text-white" : "bg-white"
+            rankType === "BOTTOM" ? "bg-slate-800 text-white" : "bg-white"
           }`}
-          onClick={() => setSortType("BOTTOM")}
+          onClick={() => setRankType("BOTTOM")}
         >
           하위 10
         </button>
@@ -58,7 +74,7 @@ export default function VolumeSection({ data }: { data: DataItem[] }) {
             />
           )}
         </div>
-        <VolumeTable data={sorted} />
+        <VolumeTable data={filteredRankedVolume} />
       </div>
     </div>
   );

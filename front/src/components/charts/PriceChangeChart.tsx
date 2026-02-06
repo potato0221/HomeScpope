@@ -40,6 +40,14 @@ export function PriceChangeChart({ data }: { data: DataItem[] }) {
           axisBottom={{ tickRotation: -30 }}
           enableLabel={false}
           enableGridY={false}
+          tooltip={({ id, value, indexValue }) => (
+            <div className="bg-white px-3 py-2 rounded shadow text-sm">
+              <strong>{indexValue}</strong>
+              <div>
+                {id}: {Number(value).toFixed(2)}%
+              </div>
+            </div>
+          )}
           markers={[
             {
               axis: "y",

@@ -5,6 +5,7 @@ interface BuildAgeRow {
   newAvgPrice: number;
   semiNewAvgPrice: number;
   oldAvgPrice: number;
+  rank: number;
 }
 
 interface TableProps {
@@ -61,12 +62,14 @@ export function RegionBuildAgeTable({ rows, buildAgeType }: TableProps) {
           </thead>
 
           <tbody>
-            {rows.map((row) => (
+            {rows.map((row, index) => (
               <tr
                 key={row.region}
                 className="border-b last:border-0 even:bg-slate-50 hover:bg-slate-100 transition"
               >
-                <td className="py-2 font-medium">{row.region}</td>
+                <td className="py-2 font-medium">
+                  {row.rank}. {row.region}
+                </td>
 
                 <td
                   className={`text-right ${

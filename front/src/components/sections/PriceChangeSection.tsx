@@ -7,16 +7,32 @@ interface DataItem {
   changeRate: number;
 }
 
-export default function PriceChangeSection({ data }: { data: DataItem[] }) {
-  const [sortType, setSortType] = useState<"UP" | "DOWN">("UP");
+interface Props {
+  rows: DataItem[];
+  keyword: string;
+}
 
-  const sorted = useMemo(() => {
-    return [...data].sort((a, b) =>
-      sortType === "UP"
-        ? b.changeRate - a.changeRate
-        : a.changeRate - b.changeRate,
-    );
-  }, [data, sortType]);
+export default function PriceChangeSection({ rows, keyword }: Props) {
+  const [rankType, setRankType] = useState<"UP" | "DOWN">("UP");
+
+  const rankedChangePrice = useMemo(() => {
+    return [...rows]
+      .sort((a, b) =>
+        rankType === "UP"
+          ? b.changeRate - a.changeRate
+          : a.changeRate - b.changeRate,
+      )
+      .map((row, idx) => ({
+        ...row,
+        rank: idx + 1,
+      }));
+  }, [rows, rankType]);
+
+  const filteredRankedChangePrice = useMemo(() => {
+    if (!keyword) return rankedChangePrice;
+
+    return rankedChangePrice.filter((r) => r.region.includes(keyword));
+  }, [rankedChangePrice, keyword]);
 
   return (
     <div>
@@ -24,22 +40,22 @@ export default function PriceChangeSection({ data }: { data: DataItem[] }) {
       <div className="inline-flex rounded-lg border mb-4 overflow-hidden">
         <button
           className={`px-4 py-2 text-sm ${
-            sortType === "UP"
+            rankType === "UP"
               ? "bg-red-500 text-white"
               : "bg-white text-gray-700"
           }`}
-          onClick={() => setSortType("UP")}
+          onClick={() => setRankType("UP")}
         >
           상승률 순
         </button>
 
         <button
           className={`px-4 py-2 text-sm ${
-            sortType === "DOWN"
+            rankType === "DOWN"
               ? "bg-blue-500 text-white"
               : "bg-white text-gray-700"
           }`}
-          onClick={() => setSortType("DOWN")}
+          onClick={() => setRankType("DOWN")}
         >
           하락률 순
         </button>
@@ -47,8 +63,8 @@ export default function PriceChangeSection({ data }: { data: DataItem[] }) {
 
       {/* ===== 차트 / 리스트 ===== */}
       <div className="grid grid-cols-[3fr_1.5fr] gap-6">
-        <PriceChangeChart data={sorted.slice(0, 10)} />
-        <PriceChangeList data={sorted} sortType={sortType} />
+        <PriceChangeChart data={filteredRankedChangePrice.slice(0, 10)} />
+        <PriceChangeList data={filteredRankedChangePrice} sortType={rankType} />
       </div>
     </div>
   );
