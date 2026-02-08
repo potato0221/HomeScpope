@@ -38,6 +38,28 @@ export default function StatsPage() {
   const [buildAgeData, setBuildAgeData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [keyword, setKeyword] = useState("");
+  const [showScroll, setShowScroll] = useState(false);
+
+  //페이지 상하단 이동
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScroll(window.scrollY > 300);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const scrollToBottom = () => {
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: "smooth",
+    });
+  };
 
   //년도,반기 중복 제거
   const uniquePeriods = useMemo(() => {
@@ -208,6 +230,29 @@ export default function StatsPage() {
         {/* ===== 4 지역별 신축 준신축 구축 평균가 ===== */}
         <RegionBuildAgeSection rows={buildAgeData} keyword={keyword} />
       </div>
+      {showScroll && (
+        <div className="fixed bottom-6 right-6 z-50">
+          <div className="flex flex-col overflow-hidden rounded-xl border bg-white shadow">
+            <button
+              onClick={scrollToTop}
+              className="w-12 h-12 flex items-center justify-center
+        text-slate-700 hover:bg-slate-100 transition"
+            >
+              ↑
+            </button>
+
+            <div className="h-px bg-slate-200" />
+
+            <button
+              onClick={scrollToBottom}
+              className="w-12 h-12 flex items-center justify-center
+        text-slate-700 hover:bg-slate-100 transition"
+            >
+              ↓
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
