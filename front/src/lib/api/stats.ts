@@ -2,7 +2,7 @@ import { client } from "@/lib/api/client";
 
 //수집된 반기 리스트
 export async function fetchCollectedPeriods() {
-  const { data, error } = await client.GET("/api/v1/apt/collected/list", {
+  const { data, error } = await client.GET("/api/v1/deal/collected/list", {
     params: {},
   });
 
@@ -14,12 +14,17 @@ export async function fetchCollectedPeriods() {
 }
 
 //지역별 평균가
-export async function fetchAvgPrice(statYear: number, statHalf: "H1" | "H2") {
+export async function fetchAvgPrice(
+  statYear: number,
+  statHalf: "H1" | "H2",
+  propertyType: "APT" | "VILLA" | "HOUSE" | "OFFICETEL",
+) {
   const { data, error } = await client.GET("/api/v1/stats/avg-price", {
     params: {
       query: {
         statYear,
         statHalf,
+        propertyType,
       },
     },
   });
@@ -34,13 +39,15 @@ export async function fetchAvgPrice(statYear: number, statHalf: "H1" | "H2") {
 //지역별 평당가
 export async function fetchAvgPricePerArea(
   statYear: number,
-  statHalf: "H1" | "H2"
+  statHalf: "H1" | "H2",
+  propertyType: "APT" | "VILLA" | "HOUSE" | "OFFICETEL",
 ) {
   const { data, error } = await client.GET("/api/v1/stats/avg-price/per-area", {
     params: {
       query: {
         statYear,
         statHalf,
+        propertyType,
       },
     },
   });
@@ -55,13 +62,15 @@ export async function fetchAvgPricePerArea(
 //지역별 거래량
 export async function fetchTradingVolume(
   statYear: number,
-  statHalf: "H1" | "H2"
+  statHalf: "H1" | "H2",
+  propertyType: "APT" | "VILLA" | "HOUSE" | "OFFICETEL",
 ) {
   const { data, error } = await client.GET("/api/v1/stats/trading-volume", {
     params: {
       query: {
         statYear,
         statHalf,
+        propertyType,
       },
     },
   });
@@ -76,13 +85,15 @@ export async function fetchTradingVolume(
 //지역별 평균가 증감률
 export async function fetchAvgPriceChange(
   currYear: number,
-  currHalf: "H1" | "H2"
+  currHalf: "H1" | "H2",
+  propertyType: "APT" | "VILLA" | "HOUSE" | "OFFICETEL",
 ) {
   const { data, error } = await client.GET("/api/v1/stats/avg-price/change", {
     params: {
       query: {
         currYear,
         currHalf,
+        propertyType,
       },
     },
   });
@@ -97,7 +108,8 @@ export async function fetchAvgPriceChange(
 //지역별 신축/준신축/구축 평균가
 export async function fetchAvgPriceByBuildAge(
   statYear: number,
-  statHalf: "H1" | "H2"
+  statHalf: "H1" | "H2",
+  propertyType: "APT" | "VILLA" | "HOUSE" | "OFFICETEL",
 ) {
   const { data, error } = await client.GET(
     "/api/v1/stats/avg-price/build-age",
@@ -106,9 +118,10 @@ export async function fetchAvgPriceByBuildAge(
         query: {
           statYear,
           statHalf,
+          propertyType,
         },
       },
-    }
+    },
   );
 
   if (error) {

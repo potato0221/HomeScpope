@@ -68,5 +68,6 @@ custom:
     dirPath: c:/temp/homescope_dev
   api:
     key: ON_SECRET
-
+  admin:
+    key: ON_SECRET
 

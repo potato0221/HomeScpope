@@ -1,13 +1,17 @@
 import { client } from "./client";
 
 export function addArea() {
-  return client.POST("/api/v1/area/add");
+  return client.POST("/api/v1/area/admin/add");
 }
 
-export function fetchApt(collectedYear: number, collectedHalf: string) {
-  return client.GET("/api/v1/apt/add", {
+export function fetchApt(
+  collectedYear: number,
+  collectedHalf: string,
+  propertyType: string,
+) {
+  return client.POST("/api/v1/deal/admin/add", {
     params: {
-      query: { collectedYear, collectedHalf },
+      query: { collectedYear, collectedHalf, propertyType },
     },
   });
 }

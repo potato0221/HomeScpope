@@ -14,13 +14,14 @@ public enum Msg {
     E200_6_TOKEN_REFRESH_SUCCEED("200-6", "토큰 갱신 성공"),
 
     E400_0_ALREADY_REGISTERED_DATA("400-0", "이미 등록된 데이터 입니다"),
-    E400_1_ALREADY_REGISTERED_MEMBER("400-5", "이미 존재하는 회원입니다."),
-    E400_2_INCORRECT_PASSWORD("400-6", "비밀번호가 일치하지 않습니다."),
-    E400_3_NOT_FOUND_USER("400-7", "해당 유저가 존재하지 않습니다."),
-    E400_4_NOT_FOUND_REFRESH_TOKEN("400-8", "존재하지 않는 리프레시 토큰입니다."),
+    E400_1_ALREADY_REGISTERED_MEMBER("400-1", "이미 존재하는 회원입니다."),
+    E400_2_INCORRECT_PASSWORD("400-2", "비밀번호가 일치하지 않습니다."),
+    E400_3_NOT_FOUND_USER("400-3", "해당 유저가 존재하지 않습니다."),
+    E400_4_NOT_FOUND_REFRESH_TOKEN("400-4", "존재하지 않는 리프레시 토큰입니다."),
 
     E401_0_UNAUTHORIZED("401-0", "로그인 후 이용 해 주세요"),
     E403_0_FORBIDDEN("403-0", "관리자 권한이 필요합니다"),
+    E403_1_INVALID_ADMIN_KEY("403-1", "관리자 키가 없거나 올바르지 않습니다."),
     E404_0_DATA_NOT_FOUND("404-0", "데이터를 찾을 수 없습니다."),
     E404_1_DATA_NOT_FOUND("404-1", "전기 데이터를 찾을 수 없습니다."),
 
