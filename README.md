@@ -3,7 +3,7 @@
 실거래 데이터를 기반으로 지역별 평균 거래가, 증감률, 연식(신축.준신축/구축)별 가격 분포를 시각화한 부동산 통계 대시보드 입니다.
 <table>
   <tr>
-    <td><img width="100%" alt="Image" src="https://github.com/user-attachments/assets/45e47d24-37b5-4c8b-819c-f2094edcbb9b" /></td>
+    <td><img width="100%" alt="Image" src="https://github.com/user-attachments/assets/c3afd7ef-b840-4e9f-90f4-60c9b4dda872" /></td>
     <td><img width="100%" alt="Image" src="https://github.com/user-attachments/assets/2272f602-6273-454b-a274-3f74176d1522" /></td>
   </tr>
   <tr>
