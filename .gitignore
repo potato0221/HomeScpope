@@ -44,5 +44,6 @@ db_dev.trace.db
 
 *.log
 *.csv
+!src/main/resources/csv/areaCode.csv
 esdata/
 *.env
